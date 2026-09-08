@@ -47,15 +47,19 @@ bmake MK_DAEMONS=yes            # telnetd, tftpd, rtadvd, getty, …
 bmake MK_PRIVATE_FRAMEWORKS=yes # tools needing FSKit/APFS/kextmanager
 ```
 
-Current state: **every tool in the inventory builds** — 214 of 214 by default,
-221 of 221 with all tiers on, from a clean tree with no errors.
+Current state: the default set builds clean — **226 of 226**, no errors. With
+all three tiers on, 247 of 265 build; the remaining 18 are diagnostics and
+daemons that need headers or Mach routines the public SDK does not ship
+(`kdebug.h`, `libproc_private.h`, `stack_logging.h`, `task_read_for_pid()`, …).
 
-Three build with caveats rather than as exact ports, each documented in its
+A few build with caveats rather than as exact ports, each documented in its
 own `mk/tool.d/<tool>.mk`: `timeout` cannot follow descendants past its direct
 child (Darwin has no subreaper API), the FSKit-backed tools report FSKit as
-unavailable — Apple's own fallback for that case — and `ifconfig`'s two newer
+unavailable — Apple's own fallback for that case, `ifconfig`'s two newer
 netem model values are recovered from the shipped binary rather than any
-published header.
+published header, and `tiffutil -info` differs cosmetically from the stock
+binary's because we link the installed libtiff rather than a patched one
+(`-dump` is byte-identical).
 
 ## Layout
 
