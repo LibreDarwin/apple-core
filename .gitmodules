@@ -118,3 +118,6 @@
 [submodule "src/man"]
 	path = src/man
 	url = https://github.com/apple-oss-distributions/man.git
+[submodule "src/net_snmp"]
+	path = src/net_snmp
+	url = https://github.com/apple-oss-distributions/net_snmp.git
