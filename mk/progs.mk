@@ -272,6 +272,9 @@ PROGS+=	syslog/newsyslog newsyslog usr/sbin
 PROGS+=	syslog/util.tproj syslog usr/bin
 PROGS+=	syslog/syslogd.tproj syslogd usr/sbin
 PROGS+=	syslog/aslmanager.tproj aslmanager usr/sbin
+PROGS+=	screen/screen screen usr/bin
+PROGS+=	vim/src vim usr/bin
+PROGS+=	vim/src/xxd xxd usr/bin
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship

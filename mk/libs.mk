@@ -61,3 +61,6 @@ LIBS+=	bash/bash-3.2/lib/intl libintl -
 LIBS+=	bash/bash-3.2/lib/readline libreadline -
 LIBS+=	bash/bash-3.2/lib/sh libsh -
 LIBS+=	bash/bash-3.2/lib/glob libglob -
+
+# vim's terminal emulator, static in Apple's build.
+LIBS+=	vim/src/libvterm/src libvterm -

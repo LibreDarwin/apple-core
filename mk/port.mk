@@ -35,6 +35,11 @@
 #	P_RELEASE_MERGE	like P_RELEASE_TREES, merged into the destination
 #			rather than replacing it -- for directories several
 #			ports each add to (usr/share/man, say)
+#	P_RELEASE_FILES	pairs of <src> <dest>: single files installed at
+#			<dest>, relative to build/release, from <src>,
+#			relative to where P_PROGS reads from.  For a port
+#			whose programs belong in more than one directory
+#			(uucp's in usr/bin and usr/sbin).
 #	P_RELEASE_SYMLINK  pairs of <target> <linkname>, both relative to
 #			build/release: one relative symlink apiece
 #	P_BUILDSYS	"autoconf" (default), "cmake", or "make" for a
@@ -149,6 +154,9 @@ print-installs:
 .for l in ${P_LIBS}
 	@echo ${P_LIBDIR:S|^${RELEASE}/||}/${l:T}
 .endfor
+.for src dst in ${P_RELEASE_FILES}
+	@echo ${dst}
+.endfor
 .for tgt lnk in ${P_RELEASE_SYMLINK}
 	@echo ${lnk}
 .endfor
@@ -181,6 +189,13 @@ all: ${P_WORKDIR}/.staged
 	@rm -f ${P_LIBDIR}/${l:T}
 	@cp ${P_PROGSRC}/${l} ${P_LIBDIR}/${l:T}
 	@${ECHO} "staged: ${P_LIBDIR:S|^${RELEASE}/||}/${l:T}"
+.endfor
+.for src dst in ${P_RELEASE_FILES}
+	@mkdir -p ${RELEASE}/${dst:H}
+	@rm -f ${RELEASE}/${dst}
+	@cp ${P_PROGSRC}/${src} ${RELEASE}/${dst}
+	@chmod u+w ${RELEASE}/${dst}
+	@${ECHO} "staged: ${dst}"
 .endfor
 .for src dst in ${P_RELEASE_TREES}
 	@mkdir -p ${RELEASE}/${dst:H}
@@ -293,6 +308,10 @@ check:
 	@test -e ${P_LIBDIR}/${l:T} || \
 		{ ${ECHO} "MISSING: ${P_LIBDIR:S|^${RELEASE}/||}/${l:T}  (port ${P_NAME})"; exit 1; }
 .endfor
+.for src dst in ${P_RELEASE_FILES}
+	@test -e ${RELEASE}/${dst} || \
+		{ ${ECHO} "MISSING: ${dst}  (port ${P_NAME})"; exit 1; }
+.endfor
 .for src dst in ${P_RELEASE_TREES}
 	@test -d ${RELEASE}/${dst} || \
 		{ ${ECHO} "MISSING: ${dst}/  (port ${P_NAME})"; exit 1; }
@@ -309,6 +328,9 @@ clean:
 .endfor
 .for l in ${P_LIBS}
 	rm -f ${P_LIBDIR}/${l:T}
+.endfor
+.for src dst in ${P_RELEASE_FILES}
+	rm -f ${RELEASE}/${dst}
 .endfor
 
 .endif

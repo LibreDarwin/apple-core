@@ -24,4 +24,10 @@
 PORTS+=	zsh/zsh zsh bin
 PORTS+=	tcsh/tcsh tcsh bin
 
+# ------------------------------------------------------------------
+# Other tools whose drops carry their own build system.
+# ------------------------------------------------------------------
+PORTS+=	lsof/lsof lsof usr/sbin
+PORTS+=	uucp/uucp uucp usr/bin
+
 .endif # MK_PORTS

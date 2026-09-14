@@ -1,0 +1,23 @@
+From: somestupidgirl <sunnevanattsol@gmail.com>
+Subject: [PATCH] vim: build without the private WeakLinking.h
+
+os_mac_conv.c includes <SoftLinking/WeakLinking.h>, which only the
+internal SDK carries, for one line: WEAK_LINK_FORCE_IMPORT of
+CreateTextEncoding(), which keeps the weak import in the binary for
+systems that lack the function.  Every macOS this builds for has it, and
+the declaration comes from the public Carbon headers either way, so the
+line is kept where the header exists and left out where it does not.
+
+--- a/src/os_mac_conv.c	2026-09-14 23:53:52
++++ b/src/os_mac_conv.c	2026-09-14 23:53:52
+@@ -24,8 +24,10 @@
+ 
+ #if defined(MACOS_CONVERT) || defined(PROTO)
+ 
++#if __has_include(<SoftLinking/WeakLinking.h>)
+ #include <SoftLinking/WeakLinking.h>
+ WEAK_LINK_FORCE_IMPORT(CreateTextEncoding);
++#endif
+ 
+ # ifdef PROTO
+ // A few dummy types to be able to generate function prototypes.
