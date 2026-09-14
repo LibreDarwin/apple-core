@@ -97,3 +97,6 @@
 [submodule "src/disklabel"]
 	path = src/disklabel
 	url = https://github.com/apple-oss-distributions/disklabel.git
+[submodule "src/file"]
+	path = src/file
+	url = https://github.com/apple-oss-distributions/file.git
