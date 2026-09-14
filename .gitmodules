@@ -79,3 +79,6 @@
 [submodule "src/PowerManagement"]
 	path = src/PowerManagement
 	url = https://github.com/apple-oss-distributions/PowerManagement
+[submodule "src/autofs"]
+	path = src/autofs
+	url = https://github.com/apple-oss-distributions/autofs.git
