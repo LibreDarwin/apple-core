@@ -187,3 +187,6 @@
 [submodule "src/libarchive"]
 	path = src/libarchive
 	url = https://github.com/apple-oss-distributions/libarchive.git
+[submodule "src/ncurses"]
+	path = src/ncurses
+	url = https://github.com/apple-oss-distributions/ncurses.git
