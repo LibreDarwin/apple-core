@@ -145,3 +145,6 @@
 [submodule "src/copyfile"]
 	path = src/copyfile
 	url = https://github.com/apple-oss-distributions/copyfile.git
+[submodule "src/rsync"]
+	path = src/rsync
+	url = https://github.com/apple-oss-distributions/rsync.git
