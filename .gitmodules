@@ -91,3 +91,6 @@
 [submodule "src/bless"]
 	path = src/bless
 	url = https://github.com/apple-oss-distributions/bless.git
+[submodule "src/bzip2"]
+	path = src/bzip2
+	url = https://github.com/apple-oss-distributions/bzip2.git
