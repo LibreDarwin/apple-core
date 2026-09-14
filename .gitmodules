@@ -88,3 +88,6 @@
 [submodule "src/bash"]
 	path = src/bash
 	url = https://github.com/apple-oss-distributions/bash.git
+[submodule "src/bless"]
+	path = src/bless
+	url = https://github.com/apple-oss-distributions/bless.git
