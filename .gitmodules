@@ -109,3 +109,6 @@
 [submodule "src/ksh"]
 	path = src/ksh
 	url = https://github.com/apple-oss-distributions/ksh.git
+[submodule "src/less"]
+	path = src/less
+	url = https://github.com/apple-oss-distributions/less.git
