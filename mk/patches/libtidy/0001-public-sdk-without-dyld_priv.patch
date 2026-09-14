@@ -1,0 +1,46 @@
+From: somestupidgirl <sunnevanattsol@gmail.com>
+Subject: [PATCH] tidy: build against the public SDK without dyld_priv.h
+
+Against a 15.4-or-later SDK, forward.h turns on the linked-on-or-after
+behaviour -- no custom allocators, malloc directly -- and alloc.c decides
+it at run time with dyld_program_minos_at_least(), from the private
+<mach-o/dyld_priv.h> only the internal SDK carries.
+
+Keep that where the header exists.  Without it, answer from the
+deployment target, which for tidy(1) is the same answer dyld gives.
+
+--- a/tidy/src/alloc.c	2026-09-14 19:32:59
++++ b/tidy/src/alloc.c	2026-09-14 19:32:59
+@@ -16,8 +16,10 @@
+ 
+ #ifdef __APPLE__
+ #include <dispatch/dispatch.h>
++#if __has_include(<mach-o/dyld_priv.h>)
+ #include <mach-o/dyld_priv.h>
+ #endif
++#endif
+ 
+ static TidyMalloc  g_malloc  = NULL;
+ static TidyRealloc g_realloc = NULL;
+@@ -102,6 +104,7 @@
+ bool linkedOnOrAfter2024EReleases(void)
+ {
+ #ifdef TIDY_LINKED_ON_OR_AFTER_MACOS15_4_IOS18_4_TVOS18_4_VISIONOS2_4_WATCHOS11_4
++#if __has_include(<mach-o/dyld_priv.h>)
+     static bool result;
+     static dispatch_once_t once;
+     dispatch_once(&once, ^{
+@@ -109,6 +112,13 @@
+     });
+     return result;
+ #else
++    /* The public SDK has no dyld_program_minos_at_least(); answer from the
++     * deployment target instead.  For tidy(1) that is its own minos, which
++     * is what dyld would report.  A program linking libtidy.dylib with an
++     * older minos gets the 2024 behaviour where Apple's gives it the old. */
++    return __MAC_OS_X_VERSION_MIN_REQUIRED >= 150400;
++#endif
++#else
+     return false;
+ #endif
+ }

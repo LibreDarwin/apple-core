@@ -246,6 +246,26 @@ PROGS+=	shell_cmds/systime systime usr/bin
 PROGS+=	system_cmds/wordexp-helper wordexp-helper usr/libexec
 
 # ------------------------------------------------------------------
+# From the submodules added with the move to upstream sources.  Sources
+# and flags follow each Apple target (mk/scripts/pbxinfo.py); placements
+# are stock macOS's.
+# ------------------------------------------------------------------
+PROGS+=	awk/src awk usr/bin
+PROGS+=	bzip2/bzip2 bzip2 usr/bin
+PROGS+=	bzip2/bzip2 bzip2recover usr/bin
+PROGS+=	bzip2/bzip2 bzdiff usr/bin
+PROGS+=	bzip2/bzip2 bzgrep usr/bin
+PROGS+=	bzip2/bzip2 bzmore usr/bin
+PROGS+=	disklabel disklabel sbin
+PROGS+=	less/less less usr/bin
+PROGS+=	less/less lessecho usr/bin
+PROGS+=	less/less lesskey usr/bin
+PROGS+=	netcat nc usr/bin
+PROGS+=	pdisk pdisk usr/sbin
+PROGS+=	tidy/tidy/console tidy usr/bin
+PROGS+=	top top usr/bin
+
+# ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship
 # with macOS but are not part of the coreutils-like default set, and
 # several read kernel interfaces the public SDK does not declare.

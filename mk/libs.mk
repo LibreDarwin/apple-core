@@ -35,3 +35,18 @@ LIBS+=	network_cmds/network_cmds_lib libnetcmds -
 
 # fsck_hfs' checking engine, which Apple builds into the fsck_hfs binary.
 LIBS+=	hfs/lib_fsck_hfs libfsck_hfs -
+
+# zlib, bzip2 and libmd, as /usr/lib has them.
+LIBS+=	zlib/zlib libz usr/lib
+LIBS+=	bzip2/bzip2 libbz2 usr/lib
+LIBS+=	libmd/libmd libmd usr/lib
+
+# libSystem's copyfile and removefile sub-libraries, in /usr/lib/system.
+LIBS+=	copyfile libcopyfile usr/lib/system
+LIBS+=	removefile libremovefile usr/lib/system
+
+# libtidy, as /usr/lib/libtidy.A.dylib -- the one tidy(1) links.
+LIBS+=	tidy/tidy/src libtidy usr/lib
+
+# top's sampling library, static in Apple's build.
+LIBS+=	top libtop -

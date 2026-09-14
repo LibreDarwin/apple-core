@@ -3,6 +3,9 @@
 #
 #	pbxinfo.py <submodule-dir>              list every target
 #	pbxinfo.py <submodule-dir> <target>     sources and build settings
+#	pbxinfo.py <submodule-dir> <target> <T_DIR>
+#	                                        the same, with the sources as a
+#	                                        T_SRCS assignment for that T_DIR
 #
 # Apple's source lists and flags live in their project files and nowhere
 # else, so a mk/tool.d fragment is written from this rather than guessed.
@@ -25,6 +28,8 @@ def main():
     if not projs:
         sys.exit("no .xcodeproj in " + root)
     want = sys.argv[2] if len(sys.argv) > 2 else None
+    tdir = sys.argv[3].strip("/") if len(sys.argv) > 3 else None
+    srcs = []
     for proj in projs:
         d = json.loads(subprocess.run(
             ["plutil", "-convert", "json", "-o", "-", proj + "/project.pbxproj"],
@@ -82,9 +87,50 @@ def main():
                 for bf in phase.get("files", []):
                     ref = o[bf].get("fileRef")
                     if ref:
-                        print("%s %s" % (label, path_of(ref)))
+                        flags = o[bf].get("settings", {}).get("COMPILER_FLAGS", "")
+                        path = path_of(ref)
+                        print("%s %s%s" % (label, path,
+                                           "  [" + flags + "]" if flags else ""))
+                        if label == "SRCS":
+                            srcs.append(path)
             for dep in tg.get("dependencies", []):
                 print("DEP %s" % o[o[dep]["target"]]["name"])
+
+    if tdir is not None:
+        print_t_srcs(root, tdir, srcs)
+
+COMPILED = (".c", ".m", ".cc", ".cpp", ".s", ".y", ".l")
+
+def print_t_srcs(root, tdir, srcs):
+    # A source inside T_DIR is named by its basename; anything else by its
+    # TOP-relative path, which mk/tool.mk takes as such because it has a
+    # slash.  Generated sources ($(BUILT_PRODUCTS_DIR)/...) are left for
+    # the fragment to produce, and listed so they are not forgotten.
+    top_src = os.path.normpath(os.path.join(os.path.relpath(root), ".."))
+    sub = os.path.basename(os.path.normpath(root))
+    words, generated = [], []
+    for p in srcs:
+        if not p.endswith(COMPILED):
+            continue
+        if p.startswith("$("):
+            generated.append(p)
+            continue
+        full = os.path.normpath(os.path.join("src", sub, p))
+        if os.path.dirname(full) == os.path.normpath(os.path.join("src", tdir)):
+            words.append(os.path.basename(full))
+        else:
+            words.append(full)
+    lines, cur = [], "T_SRCS=\t"
+    for w in words:
+        if len(cur.expandtabs(8)) + len(w) > 72:
+            lines.append(cur.rstrip() + " \\")
+            cur = "\t\t"
+        cur += w + " "
+    lines.append(cur.rstrip())
+    print()
+    print("\n".join(lines))
+    for g in generated:
+        print("# generated, not listed: %s" % g)
 
 if __name__ == "__main__":
     main()

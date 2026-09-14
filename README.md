@@ -59,12 +59,15 @@ bmake MK_PORTS=yes              # components built through their own build syste
 
 ## State
 
-The default set builds clean — **226 of 226 programs**, plus five libraries:
-`libutil`, also installed as `usr/lib/libutil.dylib`, and `libtelnet`, `libxo`,
-`libnetcmds` and `libfsck_hfs`, which Apple links statically. No ports are
-wired yet.
+The default set builds clean: **239 of 240 programs** and **10 of 12
+libraries**, five of them also installed as dylibs under Apple's names
+(`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`). The three that do not
+build are blocked on private headers that no SDK or source tree here
+carries, and `bmake check` lists them as such: `nc` (`network/conninfo.h`),
+`libcopyfile` (`quarantine.h`) and `libremovefile` (APFS's purgeable-file
+ioctls). No ports are wired yet.
 
-With the three program tiers on, 246 of 265 build. The 19 that do not are
+The three program tiers add 39 entries, of which 20 build. The rest are
 diagnostics and daemons needing headers or Mach routines the public SDK does
 not ship (`kdebug.h`, `libproc_private.h`, `stack_logging.h`,
 `task_read_for_pid()`, …). `vm_stat` joined them with system_cmds-1042.120.1,
@@ -80,7 +83,8 @@ published header, and `tiffutil -info` differs cosmetically from the stock
 binary's because we link the installed libtiff rather than a patched one
 (`-dump` is byte-identical). `libutil` carries FreeBSD's `login_cap`/`getcap`
 and `sbuf` families, which Apple's does not; `su`, `login`, `newgrp`, `getty`
-and `atrun` need them.
+and `atrun` need them. `libz` is plain zlib, without Apple's vectorised
+AddOn, which the drop does not wire up to the files that use it.
 
 ## Build system
 

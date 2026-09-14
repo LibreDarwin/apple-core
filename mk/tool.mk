@@ -26,7 +26,8 @@
 #	T_LDADD		extra libraries (e.g. -lncurses, ${LIBDIR}/libutil.a)
 #	T_LINKS		extra names for the built file, in its install
 #			directory: hardlinks beside a program (dc -> bc),
-#			symlinks beside a dylib (libbz2.dylib)
+#			symlinks beside a script (bzcmp -> bzdiff) or a
+#			dylib (libbz2.dylib -> libbz2.1.0.dylib)
 #	T_INSTALLS	further files a fragment installs itself, relative
 #			to build/release, for the stale check
 #	T_NOBUILD	set to any value to turn the entry into a no-op
@@ -138,7 +139,10 @@ all clean:
 T_SCRIPTFILE?=	${T_SRCDIR}/${T_SCRIPT}
 
 all: ${T_TARGET}
-	@${ECHO} "built: ${T_BIN}/${T_PROG} (script)"
+.for l in ${T_LINKS}
+	ln -sf ${T_PROG} ${T_TARGET:H}/${l}
+.endfor
+	@${ECHO} "built: ${T_BIN}/${T_PROG} (script)${T_LINKS:D (+${T_LINKS})}"
 
 ${T_TARGET}: ${T_SCRIPTFILE}
 	@mkdir -p ${.TARGET:H}
@@ -147,6 +151,9 @@ ${T_TARGET}: ${T_SCRIPTFILE}
 
 clean:
 	rm -f ${T_TARGET}
+.for l in ${T_LINKS}
+	rm -f ${T_TARGET:H}/${l}
+.endfor
 
 .else
 
