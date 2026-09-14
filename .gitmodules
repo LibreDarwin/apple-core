@@ -76,3 +76,6 @@
 [submodule "src/curl"]
 	path = src/curl
 	url = https://github.com/apple-oss-distributions/curl
+[submodule "src/PowerManagement"]
+	path = src/PowerManagement
+	url = https://github.com/apple-oss-distributions/PowerManagement
