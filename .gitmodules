@@ -4,9 +4,6 @@
 [submodule "src/misc_cmds"]
 	path = src/misc_cmds
 	url = https://github.com/xnuports/misc_cmds.git
-[submodule "src/mail_cmds"]
-	path = src/mail_cmds
-	url = https://github.com/xnuports/mail_cmds.git
 [submodule "src/network_cmds"]
 	path = src/network_cmds
 	url = https://github.com/xnuports/network_cmds.git
@@ -82,3 +79,6 @@
 [submodule "src/hfs"]
 	path = src/hfs
 	url = https://github.com/apple-oss-distributions/hfs.git
+[submodule "src/mail_cmds"]
+	path = src/mail_cmds
+	url = https://github.com/apple-oss-distributions/mail_cmds.git
