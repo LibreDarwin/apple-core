@@ -1,0 +1,23 @@
+From: somestupidgirl <sunnevanattsol@gmail.com>
+Subject: [PATCH] libutil: compile out the setclasscpumask() call on Darwin
+
+0001 compiles setclasscpumask() itself out under __APPLE__, since macOS
+has no cpuset(2), but left its one caller in setlogincontext() in place.
+A static archive never notices -- nothing that links login_class.o calls
+setlogincontext() with LOGIN_SETCPUMASK -- but linking libutil.dylib
+does: _setclasscpumask is undefined.
+
+--- a/login_class.c	2026-09-14 19:21:16
++++ b/login_class.c	2026-09-14 19:21:16
+@@ -477,9 +477,11 @@
+ 	if ((flags & LOGIN_SETENV) != 0)
+ 		setclassenvironment(lc, pwd, 0);
+ 
++#ifndef __APPLE__ /* LOGIN_SETCPUMASK: no cpuset(2) on macOS */
+ 	/* Set cpu affinity. */
+ 	if ((flags & LOGIN_SETCPUMASK) != 0)
+ 		setclasscpumask(lc);
++#endif
+ }
+ 
+ 

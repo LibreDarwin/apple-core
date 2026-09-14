@@ -11,4 +11,4 @@
 # assertions behind `if (DEBUG_BUILD && ...)`.
 T_CFLAGS+=	-DBSD=1 -DDEBUG_BUILD=0 \
 		-I${TOP}/src/hfs/lib_fsck_hfs -I${TOP}/src/hfs/lib_fsck_hfs/dfalib
-T_LDADD+=	${TOP}/build/lib/libfsck_hfs.a
+T_LDADD+=	${LIBDIR}/libfsck_hfs.a

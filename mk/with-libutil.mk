@@ -1,10 +1,13 @@
 # mk/with-libutil.mk
 #
-# Shared fragment: include from a tool's mk/tool.d/<prog>.mk to build
-# against our lib/libutil static library.
+# Shared fragment: link against libutil, built by lib/Makefile.
 #
-#	T_CFLAGS+= -I${TOP}/lib/libutil
-#	T_LDADD+=  ${TOP}/build/lib/libutil.a
-
-T_CFLAGS+=	-I${TOP}/lib/libutil
-T_LDADD+=	${TOP}/build/lib/libutil.a
+#	.include "${TOP}/mk/with-libutil.mk"
+#
+# Headers come from the patched copy in build/src/libutil: login_cap.h,
+# and the libutil.h that declares the login_cap/getcap and sbuf families,
+# only exist once mk/patches/libutil is applied.  lib/Makefile runs
+# before the programs, so the copy is always there by the time a program
+# compiles.
+T_CFLAGS+=	-I${TOP}/build/src/libutil
+T_LDADD+=	${LIBDIR}/libutil.a

@@ -6,10 +6,10 @@
 #
 #	T_CFLAGS+= -I${TOP}/src/network_cmds/network_cmds_lib
 #	T_CFLAGS+= -include ${TOP}/mk/net-private-compat.h
-#	T_LDADD+=  ${TOP}/build/lib/libnetcmds.a
+#	T_LDADD+=  ${LIBDIR}/libnetcmds.a
 
 T_CFLAGS+=	-I${TOP}/src/network_cmds/network_cmds_lib
 # Apple builds this project with private header sections enabled.
 T_CFLAGS+=	-DPRIVATE
 T_CFLAGS+=	-include ${TOP}/mk/net-private-compat.h
-T_LDADD+=	${TOP}/build/lib/libnetcmds.a
+T_LDADD+=	${LIBDIR}/libnetcmds.a

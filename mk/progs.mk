@@ -42,9 +42,7 @@ PROGS+=	system_cmds/sync sync bin
 PROGS+=	system_cmds/wait4path wait4path bin
 PROGS+=	text_cmds/cat cat bin
 PROGS+=	text_cmds/ed ed bin
-PROGS+=	diskdev_cmds/fsck_fskit fsck_fskit sbin
 PROGS+=	diskdev_cmds/fsck.tproj fsck sbin
-PROGS+=	diskdev_cmds/fstyp.tproj fstyp sbin
 PROGS+=	diskdev_cmds/fstyp.tproj fstyp_msdos sbin
 PROGS+=	diskdev_cmds/fstyp.tproj fstyp_ntfs sbin
 PROGS+=	diskdev_cmds/fstyp.tproj fstyp_udf sbin
@@ -54,9 +52,6 @@ PROGS+=	hfs/newfs_hfs newfs_hfs sbin
 PROGS+=	hfs/mount_hfs mount_hfs sbin
 PROGS+=	diskdev_cmds/mount_devfs.tproj mount_devfs sbin
 PROGS+=	diskdev_cmds/mount_fdesc.tproj mount_fdesc sbin
-PROGS+=	diskdev_cmds/mount.tproj mount sbin
-PROGS+=	diskdev_cmds/newfs_fskit newfs_fskit sbin
-PROGS+=	diskdev_cmds/quotacheck.tproj quotacheck sbin
 PROGS+=	diskdev_cmds/umount.tproj umount sbin
 PROGS+=	file_cmds/mknod mknod sbin
 PROGS+=	network_cmds/ifconfig.tproj ifconfig sbin
@@ -64,10 +59,7 @@ PROGS+=	network_cmds/ping.tproj ping sbin
 PROGS+=	network_cmds/ping6.tproj ping6 sbin
 PROGS+=	network_cmds/route.tproj route sbin
 PROGS+=	system_cmds/dmesg dmesg sbin
-PROGS+=	system_cmds/dynamic_pager dynamic_pager sbin
 PROGS+=	system_cmds/nologin nologin sbin
-PROGS+=	system_cmds/reboot reboot sbin
-PROGS+=	system_cmds/shutdown shutdown sbin
 PROGS+=	text_cmds/md5 md5 sbin
 PROGS+=	adv_cmds/cap_mkdb cap_mkdb usr/bin
 PROGS+=	adv_cmds/finger finger usr/bin
@@ -159,22 +151,11 @@ PROGS+=	shell_cmds/yes yes usr/bin
 PROGS+=	system_cmds/arch arch usr/bin
 PROGS+=	system_cmds/at at usr/bin
 PROGS+=	system_cmds/chpass chpass usr/bin
-PROGS+=	system_cmds/cpuctl cpuctl usr/bin
-PROGS+=	system_cmds/fs_usage fs_usage usr/bin
-PROGS+=	system_cmds/gcore gcore usr/bin
 PROGS+=	system_cmds/getconf getconf usr/bin
-PROGS+=	system_cmds/hostinfo hostinfo usr/bin
-PROGS+=	system_cmds/latency latency usr/bin
 PROGS+=	system_cmds/login login usr/bin
-PROGS+=	system_cmds/lskq lskq usr/bin
-PROGS+=	system_cmds/lsmp lsmp usr/bin
-PROGS+=	system_cmds/memory_pressure memory_pressure usr/bin
 PROGS+=	system_cmds/newgrp newgrp usr/bin
 PROGS+=	system_cmds/pagesize pagesize usr/bin
 PROGS+=	system_cmds/passwd passwd usr/bin
-PROGS+=	system_cmds/sc_usage sc_usage usr/bin
-PROGS+=	system_cmds/vm_stat vm_stat usr/bin
-PROGS+=	system_cmds/zprint zprint usr/bin
 PROGS+=	text_cmds/banner banner usr/bin
 PROGS+=	text_cmds/bintrans bintrans usr/bin
 PROGS+=	text_cmds/col col usr/bin
@@ -223,12 +204,8 @@ PROGS+=	BomCmds mkbom usr/bin
 PROGS+=	diskdev_cmds/dirs_cleaner dirs_cleaner usr/libexec
 PROGS+=	diskdev_cmds/tmp_cleaner tmp_cleaner usr/libexec
 PROGS+=	doc_cmds/makewhatis makewhatis usr/libexec
-PROGS+=	network_cmds/kdumpd.tproj kdumpd usr/libexec
-PROGS+=	remote_cmds/tftpd tftpd usr/libexec
 PROGS+=	shell_cmds/path_helper path_helper usr/libexec
-PROGS+=	system_cmds/atrun atrun usr/libexec
 PROGS+=	system_cmds/chkpasswd chkpasswd usr/libexec
-PROGS+=	system_cmds/getty getty usr/libexec
 PROGS+=	diskdev_cmds/dev_mkdb.tproj dev_mkdb usr/sbin
 PROGS+=	diskdev_cmds/edquota.tproj edquota usr/sbin
 PROGS+=	diskdev_cmds/fdisk.tproj fdisk usr/sbin
@@ -241,18 +218,13 @@ PROGS+=	network_cmds/arp.tproj arp usr/sbin
 PROGS+=	network_cmds/dnctl dnctl usr/sbin
 PROGS+=	network_cmds/ndp.tproj ndp usr/sbin
 PROGS+=	network_cmds/netstat.tproj netstat usr/sbin
-PROGS+=	network_cmds/rarpd.tproj rarpd usr/sbin
-PROGS+=	network_cmds/rtadvd.tproj rtadvd usr/sbin
-PROGS+=	network_cmds/spray.tproj spray usr/sbin
 PROGS+=	network_cmds/traceroute.tproj traceroute usr/sbin
 PROGS+=	network_cmds/traceroute6.tproj traceroute6 usr/sbin
 PROGS+=	shell_cmds/chroot chroot usr/sbin
 PROGS+=	system_cmds/ac ac usr/sbin
 PROGS+=	system_cmds/accton accton usr/sbin
-PROGS+=	system_cmds/iostat iostat usr/sbin
 PROGS+=	system_cmds/mkfile mkfile usr/sbin
 PROGS+=	system_cmds/nvram nvram usr/sbin
-PROGS+=	system_cmds/purge purge usr/sbin
 PROGS+=	system_cmds/pwd_mkdb pwd_mkdb usr/sbin
 PROGS+=	system_cmds/sa sa usr/sbin
 PROGS+=	system_cmds/sysctl sysctl usr/sbin
@@ -269,10 +241,30 @@ PROGS+=	bsd_additions/factor factor usr/bin
 PROGS+=	bsd_additions/timeout timeout usr/bin
 PROGS+=	diskdev_cmds/setclass.tproj setclass usr/sbin
 PROGS+=	network_cmds/rtsol.tproj rtsol usr/sbin
-PROGS+=	remote_cmds/talkd talkd usr/sbin
 PROGS+=	remote_cmds/telnet telnet usr/bin
-PROGS+=	remote_cmds/telnetd telnetd usr/libexec
 PROGS+=	shell_cmds/systime systime usr/bin
+PROGS+=	system_cmds/wordexp-helper wordexp-helper usr/libexec
+
+# ------------------------------------------------------------------
+# MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship
+# with macOS but are not part of the coreutils-like default set, and
+# several read kernel interfaces the public SDK does not declare.
+# ------------------------------------------------------------------
+.if ${MK_DIAGNOSTICS:tl} == "yes"
+PROGS+=	system_cmds/dynamic_pager dynamic_pager sbin
+PROGS+=	system_cmds/cpuctl cpuctl usr/bin
+PROGS+=	system_cmds/fs_usage fs_usage usr/bin
+PROGS+=	system_cmds/gcore gcore usr/bin
+PROGS+=	system_cmds/hostinfo hostinfo usr/bin
+PROGS+=	system_cmds/latency latency usr/bin
+PROGS+=	system_cmds/lskq lskq usr/bin
+PROGS+=	system_cmds/lsmp lsmp usr/bin
+PROGS+=	system_cmds/memory_pressure memory_pressure usr/bin
+PROGS+=	system_cmds/sc_usage sc_usage usr/bin
+PROGS+=	system_cmds/vm_stat vm_stat usr/bin
+PROGS+=	system_cmds/zprint zprint usr/bin
+PROGS+=	system_cmds/iostat iostat usr/sbin
+PROGS+=	system_cmds/purge purge usr/sbin
 PROGS+=	system_cmds/iosim iosim usr/bin
 PROGS+=	system_cmds/kpgo kpgo usr/bin
 PROGS+=	system_cmds/ltop ltop usr/bin
@@ -281,5 +273,36 @@ PROGS+=	system_cmds/mslutil mslutil usr/bin
 PROGS+=	system_cmds/proc_uuid_policy proc_uuid_policy usr/bin
 PROGS+=	system_cmds/stackshot stackshot usr/bin
 PROGS+=	system_cmds/vm_purgeable_stat vm_purgeable_stat usr/bin
-PROGS+=	system_cmds/wordexp-helper wordexp-helper usr/libexec
 PROGS+=	system_cmds/zlog zlog usr/bin
+.endif
+
+# ------------------------------------------------------------------
+# MK_DAEMONS -- network and service daemons, not command-line userland.
+# ------------------------------------------------------------------
+.if ${MK_DAEMONS:tl} == "yes"
+PROGS+=	network_cmds/kdumpd.tproj kdumpd usr/libexec
+PROGS+=	remote_cmds/tftpd tftpd usr/libexec
+PROGS+=	system_cmds/atrun atrun usr/libexec
+PROGS+=	system_cmds/getty getty usr/libexec
+PROGS+=	network_cmds/rarpd.tproj rarpd usr/sbin
+PROGS+=	network_cmds/rtadvd.tproj rtadvd usr/sbin
+PROGS+=	network_cmds/spray.tproj spray usr/sbin
+PROGS+=	remote_cmds/talkd talkd usr/sbin
+PROGS+=	remote_cmds/telnetd telnetd usr/libexec
+.endif
+
+# ------------------------------------------------------------------
+# MK_PRIVATE_FRAMEWORKS -- tools that link Apple private frameworks
+# absent from the public SDK: FSKit (fsck_fskit, newfs_fskit, fstyp),
+# APFS (mount), the quota disk library (quotacheck) and the
+# kextmanager MIG interface (reboot, shutdown).
+# ------------------------------------------------------------------
+.if ${MK_PRIVATE_FRAMEWORKS:tl} == "yes"
+PROGS+=	diskdev_cmds/fsck_fskit fsck_fskit sbin
+PROGS+=	diskdev_cmds/fstyp.tproj fstyp sbin
+PROGS+=	diskdev_cmds/mount.tproj mount sbin
+PROGS+=	diskdev_cmds/newfs_fskit newfs_fskit sbin
+PROGS+=	diskdev_cmds/quotacheck.tproj quotacheck sbin
+PROGS+=	system_cmds/reboot reboot sbin
+PROGS+=	system_cmds/shutdown shutdown sbin
+.endif

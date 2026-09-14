@@ -1,208 +1,51 @@
 # lib/Makefile
 #
-# Builds the static libraries consumed by the tools, from the
-# submodules under lib/, into build/lib/.  Submodules are read-only;
-# sources are referenced in place.
+# Drives the build of every library listed in mk/libs.mk by recursing
+# into mk/tool.mk once per entry, the same way src/Makefile drives the
+# programs.  Runs before the programs, which link these archives.
 #
-# NOTE: libutil's FreeBSD port (getcap/login_cap/login_class family)
-# lands with the next submodule bump; the exists() filter below picks
-# those files up automatically once present.
+# The sources are submodules under src/ (libutil, libmd, libtelnet, ...)
+# or, for libxo, under lib/ -- see mk/libs.mk.
 
-TOP?=		${.CURDIR}
+TOP?=		${.CURDIR}/..
 
-.include "${TOP}/mk/darwintools.sys.mk"
+.include "${TOP}/mk/applecore.sys.mk"
+.include "${TOP}/mk/libs.mk"
 
-LIBUTIL_DIR=	${TOP}/lib/libutil
-LIBXO_DIR=	${TOP}/lib/libxo
-LIBTELNET_DIR=	${TOP}/lib/libtelnet
-LIBFSCKHFS_DIR=	${TOP}/src/hfs/lib_fsck_hfs
-
-# dfalib's SRuntime.h still uses the classic Mac Memory Manager API
-# (NewPtr/DisposeHandle/BlockMoveData); MacMemory.h lives inside the SDK's
-# CarbonCore framework, which is not on the default include path.
-SDKROOT_PATH!=	xcrun --show-sdk-path 2>/dev/null || echo /
-CARBONCORE_HDRS=	${SDKROOT_PATH}/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
-OBJBASE=	${TOP}/build/lib
-
-LIBUTIL_SRCS=	humanize_number.c pidfile.c trimdomain.c realhostname.c \
-		realhostname_sa.c expand_number.c getmntopts.c flopen.c \
-		usbuf.c \
-		fparseln.c \
-		getcap.c login_cap.c login_class.c login_ok.c \
-		login_times.c _secure_path.c
-
-LIBUTIL_OBJS=
-.for f in ${LIBUTIL_SRCS}
-. if exists(${LIBUTIL_DIR}/${f})
-LIBUTIL_OBJS+=	${OBJBASE}/libutil/${f:R}.o
-. endif
+_ENTRIES=
+.for d n b in ${LIBS}
+_ENTRIES+=	${d}:${n}:${b}
 .endfor
 
-all: ${OBJBASE}/libutil.a ${OBJBASE}/libxo.a ${OBJBASE}/libnetcmds.a \
-	${OBJBASE}/libtelnet.a ${OBJBASE}/libfsck_hfs.a
+_EACH=		for e in ${_ENTRIES}; do \
+		    set -- $$(echo "$$e" | tr : ' '); \
+		    ${MAKE} -f ${TOP}/mk/tool.mk TOP=${TOP} T_KIND=lib \
+			T_DIR=$$1 T_PROG=$$2 T_BIN=$$3
 
-# --- libnetcmds ---------------------------------------------------
-#
-# Shared helpers for the network_cmds family (arp, netstat, ping,
-# route, traceroute, ...).  Sources live inside the network_cmds
-# checkout rather than a lib/ submodule, hence the longer path.
-
-NETLIB_DIR=	${TOP}/src/network_cmds/network_cmds_lib
-
-NETLIB_SRCS=	network_cmds_lib.c gmt2local.c
-
-NETLIB_OBJS=
-.for f in ${NETLIB_SRCS}
-. if exists(${NETLIB_DIR}/${f})
-NETLIB_OBJS+=	${OBJBASE}/netcmds/${f:R}.o
-. endif
-.endfor
-
-.PATH: ${NETLIB_DIR}
-
-.for f in ${NETLIB_SRCS}
-. if exists(${NETLIB_DIR}/${f})
-${OBJBASE}/netcmds/${f:R}.o: ${NETLIB_DIR}/${f}
-	@mkdir -p ${OBJBASE}/netcmds
-	${CC} ${CPPFLAGS} -I${NETLIB_DIR} \
-		${CFLAGS} -c ${.ALLSRC} -o ${.TARGET}
-. endif
-.endfor
-
-${OBJBASE}/libnetcmds.a: ${NETLIB_OBJS}
-	rm -f ${.TARGET}
-	${AR} crs ${.TARGET} ${NETLIB_OBJS}
-
-# --- libutil ------------------------------------------------------
-
-${OBJBASE} ${OBJBASE}/libutil:
-	mkdir -p ${.TARGET}
-
-.for f in ${LIBUTIL_SRCS}
-. if exists(${LIBUTIL_DIR}/${f})
-${OBJBASE}/libutil/${f:R}.o: ${LIBUTIL_DIR}/${f}
-	@mkdir -p ${OBJBASE}/libutil
-	${CC} ${CPPFLAGS} -I${LIBUTIL_DIR} -I${TOP}/include \
-		${CFLAGS} -c ${.ALLSRC} -o ${.TARGET}
-. endif
-.endfor
-
-# wipefs is Apple's addition to libutil and is C++, so it gets its own rule.
-# newfs_hfs (and newfs_* generally) call wipefs_alloc()/wipefs_wipe().
-.if exists(${LIBUTIL_DIR}/wipefs.cpp)
-LIBUTIL_CXX_SRCS=	wipefs.cpp ExtentManager.cpp
-.for f in ${LIBUTIL_CXX_SRCS}
-. if exists(${LIBUTIL_DIR}/${f})
-LIBUTIL_OBJS+=	${OBJBASE}/libutil/${f:R}.o
-
-${OBJBASE}/libutil/${f:R}.o: ${LIBUTIL_DIR}/${f}
-	@mkdir -p ${OBJBASE}/libutil
-	${CXX} ${CPPFLAGS} -I${LIBUTIL_DIR} -I${TOP}/include \
-		${CXXFLAGS} -c ${.ALLSRC} -o ${.TARGET}
-. endif
-.endfor
-.endif
-
-${OBJBASE}/libutil.a: ${LIBUTIL_OBJS}
-	rm -f ${.TARGET}
-	${AR} crs ${.TARGET} ${LIBUTIL_OBJS}
-
-# --- libxo --------------------------------------------------------
-#
-# Built outside autotools; xo_config.h comes from our hand-maintained
-# Darwin configuration (mk/xo_config.darwin.h) and is published into
-# build/include/ so consumers find it via the default CPPFLAGS.
-
-LIBXO_SRCS=	libxo.c xo_encoder.c xo_format.c xo_syslog.c \
-		xo_tolower.c xo_toupper.c xo_utf8.c
-
-LIBXO_OBJS=
-.for f in ${LIBXO_SRCS}
-. if exists(${LIBXO_DIR}/libxo/${f})
-LIBXO_OBJS+=	${OBJBASE}/libxo/${f:R}.o
-. endif
-.endfor
-
-${OBJBASE}/xo_config.h: ${TOP}/mk/xo_config.darwin.h
-	cp ${.ALLSRC} ${.TARGET}
-
-.PATH: ${LIBXO_DIR}/libxo
-
-.for f in ${LIBXO_SRCS}
-. if exists(${LIBXO_DIR}/libxo/${f})
-${OBJBASE}/libxo/${f:R}.o: ${LIBXO_DIR}/libxo/${f} ${OBJBASE}/xo_config.h
-	@mkdir -p ${OBJBASE}/libxo
-	${CC} ${CPPFLAGS} -I${OBJBASE} -I${LIBXO_DIR}/libxo \
-		${CFLAGS} -c ${.ALLSRC:M*.c} -o ${.TARGET}
-. endif
-.endfor
-
-${OBJBASE}/libxo.a: ${LIBXO_OBJS}
-	rm -f ${.TARGET}
-	${AR} crs ${.TARGET} ${LIBXO_OBJS}
-
-# --- libtelnet -----------------------------------------------------
-#
-# Only the crypto-free support pieces (option negotiation helpers).
-# The auth/encrypt sources need krb5/DES and are pulled in solely under
-# -DAUTHENTICATION/-DENCRYPTION, which the darwintools telnet does not set.
-
-LIBTELNET_SRCS=	misc.c genget.c getent.c
-
-LIBTELNET_OBJS=
-.for f in ${LIBTELNET_SRCS}
-. if exists(${LIBTELNET_DIR}/${f})
-LIBTELNET_OBJS+=	${OBJBASE}/libtelnet/${f:R}.o
-. endif
-.endfor
-
-.for f in ${LIBTELNET_SRCS}
-. if exists(${LIBTELNET_DIR}/${f})
-${OBJBASE}/libtelnet/${f:R}.o: ${LIBTELNET_DIR}/${f}
-	@mkdir -p ${OBJBASE}/libtelnet
-	${CC} ${CPPFLAGS} -I${LIBTELNET_DIR} \
-		${CFLAGS} -c ${.ALLSRC} -o ${.TARGET}
-. endif
-.endfor
-
-${OBJBASE}/libtelnet.a: ${LIBTELNET_OBJS}
-	rm -f ${.TARGET}
-	${AR} crs ${.TARGET} ${LIBTELNET_OBJS}
-
-# --- libfsck_hfs ---------------------------------------------------
-#
-# fsck_hfs' support library, from the hfs submodule rather than lib/.
-# Sources are discovered so the dfalib set tracks upstream; DecompMakeData
-# is excluded -- it is a build-time generator with its own main(), not
-# library code.
-
-LIBFSCKHFS_SRCS!=	cd ${LIBFSCKHFS_DIR} && ls *.c dfalib/*.c 2>/dev/null | grep -v DecompMakeData || true
-
-LIBFSCKHFS_OBJS=
-.for f in ${LIBFSCKHFS_SRCS}
-LIBFSCKHFS_OBJS+=	${OBJBASE}/fsck_hfs/${f:T:R}.o
-.endfor
-
-.for f in ${LIBFSCKHFS_SRCS}
-${OBJBASE}/fsck_hfs/${f:T:R}.o: ${LIBFSCKHFS_DIR}/${f}
-	@mkdir -p ${OBJBASE}/fsck_hfs
-	${CC} ${CPPFLAGS} -DBSD=1 -DDEBUG_BUILD=0 -I${LIBFSCKHFS_DIR} -I${LIBFSCKHFS_DIR}/dfalib \
-		-I${TOP}/src/hfs/fsck_hfs -I${TOP}/include \
-		${CFLAGS} -c ${.ALLSRC} -o ${.TARGET}
-.endfor
-
-${OBJBASE}/libfsck_hfs.a: ${LIBFSCKHFS_OBJS}
-	rm -f ${.TARGET}
-	${AR} crs ${.TARGET} ${LIBFSCKHFS_OBJS}
+# As in src/Makefile, a failure does not stop the rest; check-libs is
+# the guard.  A missing archive shows up again as link failures in the
+# programs that need it.
+all:
+	@${_EACH} || true; done
 
 clean:
-	rm -rf ${OBJBASE}
+	@${_EACH} clean || true; done
 
-libxo-clean: .PHONY
-	rm -rf ${OBJBASE}/libxo ${OBJBASE}/libxo.a ${OBJBASE}/xo_config.h \
-		${OBJBASE}/netcmds ${OBJBASE}/libnetcmds.a
+check-libs:
+	@s=0; ${_EACH} check || s=1; done; \
+	[ $$s = 0 ] && ${ECHO} "check: every library entry produced its files" || exit 1
 
-list-libs: .PHONY
-	@${ECHO} "build/lib/libutil.a <-" ${LIBUTIL_OBJS:C|^${OBJBASE}/libutil/||}
-	@${ECHO} "build/lib/libxo.a   <-" ${LIBXO_OBJS:C|^${OBJBASE}/libxo/||}
-	@${ECHO} "build/lib/libnetcmds.a <-" ${NETLIB_OBJS:C|^${OBJBASE}/netcmds/||}
+print-installs:
+	@${_EACH} print-installs; done
+
+# The dylib's name comes from the entry's fragment (T_DYLIB), so ask
+# mk/tool.mk rather than guessing it here.
+list-libs:
+	@for e in ${_ENTRIES}; do \
+	    set -- $$(echo "$$e" | tr : ' '); \
+	    i=$$(${MAKE} -f ${TOP}/mk/tool.mk TOP=${TOP} T_KIND=lib \
+		T_DIR=$$1 T_PROG=$$2 T_BIN=$$3 print-installs | head -1); \
+	    ${ECHO} "build/lib/$$2.a$${i:+ + $$i}	<- src/$$1"; \
+	done
+
+.PHONY: all clean check-libs list-libs print-installs

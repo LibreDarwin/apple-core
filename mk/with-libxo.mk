@@ -5,7 +5,7 @@
 # output: text, XML, JSON, HTML via xo_emit/xo_parse_args).
 #
 #	T_CFLAGS+= -I${TOP}/lib/libxo/libxo
-#	T_LDADD+=  ${TOP}/build/lib/libxo.a
+#	T_LDADD+=  ${LIBDIR}/libxo.a
 
 T_CFLAGS+=	-I${TOP}/lib/libxo/libxo
-T_LDADD+=	${TOP}/build/lib/libxo.a
+T_LDADD+=	${LIBDIR}/libxo.a

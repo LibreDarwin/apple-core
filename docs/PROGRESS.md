@@ -59,9 +59,9 @@ than glossed over:
 
 - **Link system libs over homebrew** wherever an SDK `.tbd` exists — zero runtime deps beyond stock macOS.
 - `/usr/lib/*.dylib` don't exist on disk anymore (dyld shared cache); `.tbd`s are the source of truth.
-- `lib/libmd` kept: system libmd exports one-shot wrappers only (no `MD5Init` streaming API), no public headers.
-- `lib/libtelnet` kept: absent everywhere on modern systems.
-- `lib/libutil` kept: SDK has no `libutil.h`; future home of `login_cap`/`setusercontext`.
+- `src/libmd` (libmd-7) kept: system libmd exports one-shot wrappers only (no `MD5Init` streaming API), no public headers.
+- `src/libtelnet` (libtelnet-13) kept: absent everywhere on modern systems.
+- `src/libutil` (libutil-73) kept: SDK has no `libutil.h`. Apple's libutil lacks `login_cap`/`setusercontext` and `sbuf`; FreeBSD's are applied from `mk/patches/libutil`.
 - Kerberos.framework exposes full core `krb5_*` API (incl. `sendauth`/`recvauth`) → telnet needs no bundled krb5.
 
 ## Open work
