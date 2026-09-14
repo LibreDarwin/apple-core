@@ -163,3 +163,6 @@
 [submodule "src/vim"]
 	path = src/vim
 	url = https://github.com/apple-oss-distributions/vim.git
+[submodule "src/uucp"]
+	path = src/uucp
+	url = https://github.com/apple-oss-distributions/uucp.git
