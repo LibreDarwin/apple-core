@@ -130,3 +130,6 @@
 [submodule "src/pdisk"]
 	path = src/pdisk
 	url = https://github.com/apple-oss-distributions/pdisk.git
+[submodule "src/postfix"]
+	path = src/postfix
+	url = https://github.com/apple-oss-distributions/postfix.git
