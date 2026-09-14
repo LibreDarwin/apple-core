@@ -160,3 +160,6 @@
 [submodule "src/xar"]
 	path = src/xar
 	url = https://github.com/apple-oss-distributions/xar.git
+[submodule "src/vim"]
+	path = src/vim
+	url = https://github.com/apple-oss-distributions/vim.git
