@@ -1,9 +1,3 @@
-[submodule "lib/libutil"]
-	path = lib/libutil
-	url = https://github.com/xnuports/libutil.git
-[submodule "lib/libmd"]
-	path = lib/libmd
-	url = https://github.com/xnuports/libmd.git
 [submodule "tools/xcrmint"]
 	path = tools/xcrmint
 	url = https://github.com/xnuports/xcrmint.git
@@ -190,3 +184,6 @@
 [submodule "src/ncurses"]
 	path = src/ncurses
 	url = https://github.com/apple-oss-distributions/ncurses.git
+[submodule "src/libmd"]
+	path = src/libmd
+	url = https://github.com/apple-oss-distributions/libmd.git
