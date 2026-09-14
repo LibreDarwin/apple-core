@@ -166,3 +166,6 @@
 [submodule "src/uucp"]
 	path = src/uucp
 	url = https://github.com/apple-oss-distributions/uucp.git
+[submodule "src/top"]
+	path = src/top
+	url = https://github.com/apple-oss-distributions/top.git
