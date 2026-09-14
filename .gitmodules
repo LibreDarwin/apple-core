@@ -34,9 +34,6 @@
 [submodule "src/system_cmds"]
 	path = src/system_cmds
 	url = https://github.com/xnuports/system_cmds.git
-[submodule "src/bc"]
-	path = src/bc
-	url = https://github.com/xnuports/bc.git
 [submodule "lib/libmd"]
 	path = lib/libmd
 	url = https://github.com/xnuports/libmd.git
@@ -82,3 +79,6 @@
 [submodule "basic_cmds"]
 	path = src/basic_cmds
 	url = https://github.com/apple-oss-distributions/basic_cmds.git
+[submodule "src/bc"]
+	path = src/bc
+	url = https://github.com/apple-oss-distributions/bc.git
