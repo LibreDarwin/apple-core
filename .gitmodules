@@ -1,9 +1,6 @@
 [submodule "lib/libutil"]
 	path = lib/libutil
 	url = https://github.com/xnuports/libutil.git
-[submodule "src/shell_cmds"]
-	path = src/shell_cmds
-	url = https://github.com/xnuports/shell_cmds.git
 [submodule "src/text_cmds"]
 	path = src/text_cmds
 	url = https://github.com/xnuports/text_cmds.git
@@ -82,3 +79,6 @@
 [submodule "src/remote_cmds"]
 	path = src/remote_cmds
 	url = https://github.com/apple-oss-distributions/remote_cmds.git
+[submodule "src/shell_cmds"]
+	path = src/shell_cmds
+	url = https://github.com/apple-oss-distributions/shell_cmds.git
