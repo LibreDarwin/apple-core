@@ -4,9 +4,6 @@
 [submodule "src/misc_cmds"]
 	path = src/misc_cmds
 	url = https://github.com/xnuports/misc_cmds.git
-[submodule "src/doc_cmds"]
-	path = src/doc_cmds
-	url = https://github.com/xnuports/doc_cmds.git
 [submodule "src/file_cmds"]
 	path = src/file_cmds
 	url = https://github.com/xnuports/file_cmds.git
@@ -82,3 +79,6 @@
 [submodule "src/diskdev_cmds"]
 	path = src/diskdev_cmds
 	url = https://github.com/apple-oss-distributions/diskdev_cmds.git
+[submodule "src/doc_cmds"]
+	path = src/doc_cmds
+	url = https://github.com/apple-oss-distributions/doc_cmds.git
