@@ -121,3 +121,6 @@
 [submodule "src/net_snmp"]
 	path = src/net_snmp
 	url = https://github.com/apple-oss-distributions/net_snmp.git
+[submodule "src/netcat"]
+	path = src/netcat
+	url = https://github.com/apple-oss-distributions/netcat.git
