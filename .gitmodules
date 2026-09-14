@@ -73,3 +73,6 @@
 [submodule "src/BomCmds"]
 	path = src/BomCmds
 	url = https://github.com/Remorix/BomCmds.git
+[submodule "src/curl"]
+	path = src/curl
+	url = https://github.com/apple-oss-distributions/curl
