@@ -106,3 +106,6 @@
 [submodule "src/kext_tools"]
 	path = src/kext_tools
 	url = https://github.com/apple-oss-distributions/kext_tools.git
+[submodule "src/ksh"]
+	path = src/ksh
+	url = https://github.com/apple-oss-distributions/ksh.git
