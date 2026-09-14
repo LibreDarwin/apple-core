@@ -85,3 +85,6 @@
 [submodule "src/awk"]
 	path = src/awk
 	url = https://github.com/apple-oss-distributions/awk.git
+[submodule "src/bash"]
+	path = src/bash
+	url = https://github.com/apple-oss-distributions/bash.git
