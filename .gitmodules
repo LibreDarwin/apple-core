@@ -181,3 +181,6 @@
 [submodule "src/zlib"]
 	path = src/zlib
 	url = https://github.com/apple-oss-distributions/zlib.git
+[submodule "src/libutil"]
+	path = src/libutil
+	url = https://github.com/apple-oss-distributions/libutil.git
