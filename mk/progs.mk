@@ -264,6 +264,14 @@ PROGS+=	netcat nc usr/bin
 PROGS+=	pdisk pdisk usr/sbin
 PROGS+=	tidy/tidy/console tidy usr/bin
 PROGS+=	top top usr/bin
+PROGS+=	bash/bash-3.2 bash bin
+PROGS+=	file/file/src file usr/bin
+PROGS+=	rsync/openrsync rsync usr/bin
+PROGS+=	ipsec/ipsec-tools/setkey setkey usr/sbin
+PROGS+=	syslog/newsyslog newsyslog usr/sbin
+PROGS+=	syslog/util.tproj syslog usr/bin
+PROGS+=	syslog/syslogd.tproj syslogd usr/sbin
+PROGS+=	syslog/aslmanager.tproj aslmanager usr/sbin
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship

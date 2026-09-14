@@ -23,6 +23,9 @@
 #			paths for sources outside T_SRCDIR)
 #	T_CFLAGS	extra compiler flags (C, Objective-C and C++ alike)
 #	T_CXXFLAGS	extra flags for C++ sources only (e.g. -std=)
+#	T_YFLAGS	extra yacc flags (e.g. -p prefix, for a library's
+#			grammar that must not collide with a program's)
+#	T_LFLAGS	extra lex flags (e.g. -P prefix)
 #	T_LDADD		extra libraries (e.g. -lncurses, ${LIBDIR}/libutil.a)
 #	T_LINKS		extra names for the built file, in its install
 #			directory: hardlinks beside a program (dc -> bc),
@@ -257,7 +260,7 @@ ${T_OBJDIR}/${s:T:R}.o: ${TOP}/${s}
 # Yacc: foo.y -> foo.tab.c + foo.tab.h -> foo.tab.o
 ${T_OBJDIR}/${s:T:R}.tab.c ${T_OBJDIR}/${s:T:R}.tab.h: ${T_SRCDIR}/${s}
 	@mkdir -p ${T_OBJDIR}
-	cd ${T_OBJDIR} && ${YACC} -d ${T_SRCDIR}/${s} && \
+	cd ${T_OBJDIR} && ${YACC} -d ${T_YFLAGS} ${T_SRCDIR}/${s} && \
 	    mv y.tab.c ${s:T:R}.tab.c && mv y.tab.h ${s:T:R}.tab.h
 
 ${T_OBJDIR}/${s:T:R}.tab.o: ${T_OBJDIR}/${s:T:R}.tab.c ${T_OBJDIR}/${s:T:R}.tab.h
@@ -266,7 +269,7 @@ ${T_OBJDIR}/${s:T:R}.tab.o: ${T_OBJDIR}/${s:T:R}.tab.c ${T_OBJDIR}/${s:T:R}.tab.
 # Lex: foo.l -> foo.l.lex.c -> foo.l.lex.o
 ${T_OBJDIR}/${s:T}.lex.c: ${T_SRCDIR}/${s}
 	@mkdir -p ${T_OBJDIR}
-	${LEX} -t ${T_SRCDIR}/${s} > ${.TARGET}
+	${LEX} ${T_LFLAGS} -t ${T_SRCDIR}/${s} > ${.TARGET}
 
 ${T_OBJDIR}/${s:T}.lex.o: ${T_OBJDIR}/${s:T}.lex.c
 	${CC} ${CPPFLAGS} ${CFLAGS} ${T_CFLAGS} -c ${T_OBJDIR}/${s:T}.lex.c -o ${.TARGET}

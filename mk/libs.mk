@@ -50,3 +50,14 @@ LIBS+=	tidy/tidy/src libtidy usr/lib
 
 # top's sampling library, static in Apple's build.
 LIBS+=	top libtop -
+
+# libipsec, as /usr/lib/libipsec.A.dylib, for setkey(8).
+LIBS+=	ipsec/ipsec-tools/libipsec libipsec usr/lib
+
+# What bash(1) links, all static in Apple's build: its builtins, and the
+# intl, readline, sh and glob libraries bash 3.2 carries.
+LIBS+=	bash/bash-3.2/builtins libbuiltins -
+LIBS+=	bash/bash-3.2/lib/intl libintl -
+LIBS+=	bash/bash-3.2/lib/readline libreadline -
+LIBS+=	bash/bash-3.2/lib/sh libsh -
+LIBS+=	bash/bash-3.2/lib/glob libglob -

@@ -54,18 +54,22 @@ off, each enabled independently:
 bmake MK_DIAGNOSTICS=yes        # fs_usage, latency, zprint, vm_stat, gcore, …
 bmake MK_DAEMONS=yes            # telnetd, tftpd, rtadvd, getty, …
 bmake MK_PRIVATE_FRAMEWORKS=yes # tools needing FSKit/APFS/kextmanager
-bmake MK_PORTS=yes              # components built through their own build system
+bmake MK_PORTS=yes              # zsh, tcsh: built through their own configure
 ```
 
 ## State
 
-The default set builds clean: **239 of 240 programs** and **10 of 12
-libraries**, five of them also installed as dylibs under Apple's names
-(`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`). The three that do not
-build are blocked on private headers that no SDK or source tree here
+The default set builds clean: **244 of 248 programs** and **16 of 18
+libraries**, six of them also installed as dylibs under Apple's names
+(`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`). With
+`MK_PORTS=yes`, **zsh and tcsh** (with `csh`) build through their own
+configure too.
+
+Six entries are blocked on private headers that no SDK or source tree here
 carries, and `bmake check` lists them as such: `nc` (`network/conninfo.h`),
+`syslog`, `syslogd` and `aslmanager` (`configuration_profile.h`),
 `libcopyfile` (`quarantine.h`) and `libremovefile` (APFS's purgeable-file
-ioctls). No ports are wired yet.
+ioctls).
 
 The three program tiers add 39 entries, of which 20 build. The rest are
 diagnostics and daemons needing headers or Mach routines the public SDK does
@@ -84,7 +88,8 @@ binary's because we link the installed libtiff rather than a patched one
 (`-dump` is byte-identical). `libutil` carries FreeBSD's `login_cap`/`getcap`
 and `sbuf` families, which Apple's does not; `su`, `login`, `newgrp`, `getty`
 and `atrun` need them. `libz` is plain zlib, without Apple's vectorised
-AddOn, which the drop does not wire up to the files that use it.
+AddOn, which the drop does not wire up to the files that use it. zsh is
+built without its `pcre` module, which the public SDK has no headers for.
 
 ## Build system
 

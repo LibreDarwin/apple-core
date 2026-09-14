@@ -16,4 +16,12 @@
 
 .if ${MK_PORTS:tl} == "yes"
 
+# ------------------------------------------------------------------
+# Shells.  Apple's drops wrap upstream's autoconf tree in a Makefile of
+# their own; the tree underneath is what is configured, with the flags
+# that Makefile passes.
+# ------------------------------------------------------------------
+PORTS+=	zsh/zsh zsh bin
+PORTS+=	tcsh/tcsh tcsh bin
+
 .endif # MK_PORTS
