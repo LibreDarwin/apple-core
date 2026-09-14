@@ -1,12 +1,6 @@
 [submodule "lib/libutil"]
 	path = lib/libutil
 	url = https://github.com/xnuports/libutil.git
-[submodule "src/misc_cmds"]
-	path = src/misc_cmds
-	url = https://github.com/xnuports/misc_cmds.git
-[submodule "src/network_cmds"]
-	path = src/network_cmds
-	url = https://github.com/xnuports/network_cmds.git
 [submodule "src/patch_cmds"]
 	path = src/patch_cmds
 	url = https://github.com/xnuports/patch_cmds.git
@@ -82,3 +76,9 @@
 [submodule "src/mail_cmds"]
 	path = src/mail_cmds
 	url = https://github.com/apple-oss-distributions/mail_cmds.git
+[submodule "src/misc_cmds"]
+	path = src/misc_cmds
+	url = https://github.com/apple-oss-distributions/misc_cmds.git
+[submodule "src/network_cmds"]
+	path = src/network_cmds
+	url = https://github.com/apple-oss-distributions/network_cmds.git
