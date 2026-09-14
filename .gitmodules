@@ -115,3 +115,6 @@
 [submodule "src/lsof"]
 	path = src/lsof
 	url = https://github.com/apple-oss-distributions/lsof.git
+[submodule "src/man"]
+	path = src/man
+	url = https://github.com/apple-oss-distributions/man.git
