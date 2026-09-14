@@ -169,3 +169,6 @@
 [submodule "src/top"]
 	path = src/top
 	url = https://github.com/apple-oss-distributions/top.git
+[submodule "src/tidy"]
+	path = src/tidy
+	url = https://github.com/apple-oss-distributions/tidy.git
