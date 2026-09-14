@@ -82,3 +82,6 @@
 [submodule "src/text_cmds"]
 	path = src/text_cmds
 	url = https://github.com/apple-oss-distributions/text_cmds.git
+[submodule "src/awk"]
+	path = src/awk
+	url = https://github.com/apple-oss-distributions/awk.git
