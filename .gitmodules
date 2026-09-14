@@ -103,3 +103,6 @@
 [submodule "src/ipsec"]
 	path = src/ipsec
 	url = https://github.com/apple-oss-distributions/ipsec.git
+[submodule "src/kext_tools"]
+	path = src/kext_tools
+	url = https://github.com/apple-oss-distributions/kext_tools.git
