@@ -136,3 +136,6 @@
 [submodule "src/screen"]
 	path = src/screen
 	url = https://github.com/apple-oss-distributions/screen.git
+[submodule "src/sudo"]
+	path = src/sudo
+	url = https://github.com/apple-oss-distributions/sudo.git
