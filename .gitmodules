@@ -127,3 +127,6 @@
 [submodule "src/pcre"]
 	path = src/pcre
 	url = https://github.com/apple-oss-distributions/pcre.git
+[submodule "src/pdisk"]
+	path = src/pdisk
+	url = https://github.com/apple-oss-distributions/pdisk.git
