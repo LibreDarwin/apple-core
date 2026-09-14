@@ -112,3 +112,6 @@
 [submodule "src/less"]
 	path = src/less
 	url = https://github.com/apple-oss-distributions/less.git
+[submodule "src/lsof"]
+	path = src/lsof
+	url = https://github.com/apple-oss-distributions/lsof.git
