@@ -157,3 +157,6 @@
 [submodule "src/zip"]
 	path = src/zip
 	url = https://github.com/apple-oss-distributions/zip.git
+[submodule "src/xar"]
+	path = src/xar
+	url = https://github.com/apple-oss-distributions/xar.git
