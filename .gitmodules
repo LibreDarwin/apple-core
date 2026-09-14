@@ -139,3 +139,6 @@
 [submodule "src/sudo"]
 	path = src/sudo
 	url = https://github.com/apple-oss-distributions/sudo.git
+[submodule "src/removefile"]
+	path = src/removefile
+	url = https://github.com/apple-oss-distributions/removefile.git
