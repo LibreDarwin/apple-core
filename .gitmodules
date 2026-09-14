@@ -148,3 +148,9 @@
 [submodule "src/rsync"]
 	path = src/rsync
 	url = https://github.com/apple-oss-distributions/rsync.git
+[submodule "src/syslog"]
+	path = src/syslog
+	url = https://github.com/apple-oss-distributions/syslog.git
+[submodule "src/tcpdump"]
+	path = src/tcpdump
+	url = https://github.com/apple-oss-distributions/tcpdump.git
