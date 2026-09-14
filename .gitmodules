@@ -133,3 +133,6 @@
 [submodule "src/postfix"]
 	path = src/postfix
 	url = https://github.com/apple-oss-distributions/postfix.git
+[submodule "src/screen"]
+	path = src/screen
+	url = https://github.com/apple-oss-distributions/screen.git
