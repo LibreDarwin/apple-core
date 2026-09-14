@@ -1,9 +1,6 @@
 [submodule "lib/libutil"]
 	path = lib/libutil
 	url = https://github.com/xnuports/libutil.git
-[submodule "src/basic_cmds"]
-	path = src/basic_cmds
-	url = https://github.com/xnuports/basic_cmds.git
 [submodule "src/misc_cmds"]
 	path = src/misc_cmds
 	url = https://github.com/xnuports/misc_cmds.git
@@ -82,3 +79,6 @@
 [submodule "src/adv_cmds"]
 	path = src/adv_cmds
 	url = https://github.com/apple-oss-distributions/adv_cmds.git
+[submodule "basic_cmds"]
+	path = src/basic_cmds
+	url = https://github.com/apple-oss-distributions/basic_cmds.git
