@@ -100,3 +100,6 @@
 [submodule "src/file"]
 	path = src/file
 	url = https://github.com/apple-oss-distributions/file.git
+[submodule "src/ipsec"]
+	path = src/ipsec
+	url = https://github.com/apple-oss-distributions/ipsec.git
