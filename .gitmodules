@@ -178,3 +178,6 @@
 [submodule "src/zsh"]
 	path = src/zsh
 	url = https://github.com/apple-oss-distributions/zsh.git
+[submodule "src/zlib"]
+	path = src/zlib
+	url = https://github.com/apple-oss-distributions/zlib.git
