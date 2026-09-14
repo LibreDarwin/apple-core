@@ -154,3 +154,6 @@
 [submodule "src/tcpdump"]
 	path = src/tcpdump
 	url = https://github.com/apple-oss-distributions/tcpdump.git
+[submodule "src/zip"]
+	path = src/zip
+	url = https://github.com/apple-oss-distributions/zip.git
