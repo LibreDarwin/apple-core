@@ -10,9 +10,6 @@
 [submodule "src/doc_cmds"]
 	path = src/doc_cmds
 	url = https://github.com/xnuports/doc_cmds.git
-[submodule "src/adv_cmds"]
-	path = src/adv_cmds
-	url = https://github.com/xnuports/adv_cmds.git
 [submodule "src/diskdev_cmds"]
 	path = src/diskdev_cmds
 	url = https://github.com/xnuports/diskdev_cmds.git
