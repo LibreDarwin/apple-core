@@ -47,7 +47,7 @@ release tree.
 
 ### Optional tiers
 
-The default build is the strict coreutils-like set. Four groups are gated
+The default build is the strict coreutils-like set. Six groups are gated
 off, each enabled independently:
 
 ```bash
@@ -55,11 +55,17 @@ bmake MK_DIAGNOSTICS=yes        # fs_usage, latency, zprint, vm_stat, gcore, …
 bmake MK_DAEMONS=yes            # telnetd, tftpd, rtadvd, getty, …
 bmake MK_PRIVATE_FRAMEWORKS=yes # tools needing FSKit/APFS/kextmanager
 bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar, pcre: their own build systems
+bmake MK_KEXT_TOOLS=yes         # kextload, kextutil, kextcache, kcditto, … and libbless
+bmake MK_AUTOFS=yes             # automount, automountd, autofsd and autofs.kext's helpers
 ```
+
+kext_tools and autofs are OS components rather than userland and are
+likely to move to the LibreDarwin OS repository; until then they stay here,
+building, behind their own switches.
 
 ## State
 
-The default set builds clean: **all 262 programs** and **all 21
+The default set builds clean: **all 253 programs** and **all 20
 libraries**, eight of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`, and
 `libcopyfile` and `libremovefile` in `usr/lib/system`). With `MK_PORTS=yes`,
@@ -85,11 +91,13 @@ configd-1405.120.5's SystemConfiguration private headers,
 SMBClient-538.121.1's client headers, libdispatch-1542.0.4's private
 headers, and xnu's corecrypto, IOReport and hibernation headers.
 
-The three program tiers add 50 entries, and all of them build too: the
-diagnostics (`fs_usage`, `gcore`, `latency`, `lsmp`, `stackshot`, `zlog`,
-…), the daemons, PowerManagement's `pmset` and `ioupsd`, and autofs'
-`automount`, `automountd`, `autofsd`, `mount_url`, `od_user_homes` and the
-helpers autofs.kext carries. What they need beyond the public SDK comes from
+The diagnostics, daemons and private-frameworks tiers add 41 entries, and
+all of them build too: the diagnostics (`fs_usage`, `gcore`, `latency`,
+`lsmp`, `stackshot`, `zlog`, …), the daemons, and PowerManagement's `pmset`
+and `ioupsd`. So do the nine kext_tools entries (with `libbless`) under
+`MK_KEXT_TOOLS` and the nine autofs entries — `automount`, `automountd`,
+`autofsd`, `mount_url`, `od_user_homes` and the helpers autofs.kext carries
+— under `MK_AUTOFS`. What they need beyond the public SDK comes from
 xnu, libmalloc and dyld where Apple publish it, and is recovered from the
 shipped binaries where they do not (`ktrace` session SPI, Background Task
 Management, CoreSymbolication, process responsibility, the os_log hook,

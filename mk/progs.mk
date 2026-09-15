@@ -276,6 +276,14 @@ PROGS+=	screen/screen screen usr/bin
 PROGS+=	vim/src vim usr/bin
 PROGS+=	vim/src/xxd xxd usr/bin
 PROGS+=	PlistBuddy PlistBuddy usr/libexec
+PROGS+=	PowerManagement caffeinate usr/bin
+
+# ------------------------------------------------------------------
+# MK_KEXT_TOOLS -- kext_tools: loading, inspecting and caching kernel
+# extensions.  OS components rather than userland, and likely to move to
+# the LibreDarwin OS repository; libbless (mk/libs.mk) goes with them.
+# ------------------------------------------------------------------
+.if ${MK_KEXT_TOOLS:tl} == "yes"
 PROGS+=	kext_tools kextfind usr/sbin
 PROGS+=	kext_tools kextlibs usr/sbin
 PROGS+=	kext_tools kextstat usr/sbin
@@ -285,7 +293,25 @@ PROGS+=	kext_tools kextload sbin
 PROGS+=	kext_tools kextutil usr/bin
 PROGS+=	kext_tools kextcache usr/sbin
 PROGS+=	kext_tools kcditto usr/sbin
-PROGS+=	PowerManagement caffeinate usr/bin
+.endif
+
+# ------------------------------------------------------------------
+# MK_AUTOFS -- the automounter: automount(8), its launchd daemons and the
+# helpers autofs.kext carries.  OS components rather than userland, and
+# likely to move to the LibreDarwin OS repository.
+# ------------------------------------------------------------------
+.if ${MK_AUTOFS:tl} == "yes"
+PROGS+=	autofs automount usr/sbin
+PROGS+=	autofs automountd usr/libexec
+PROGS+=	autofs autofsd usr/libexec
+PROGS+=	autofs mount_url usr/libexec
+PROGS+=	autofs od_user_homes usr/libexec
+# autofs.kext's helper tools, which live in the kext bundle on stock macOS.
+PROGS+=	autofs checktrigger System/Library/Extensions/autofs.kext/Contents/Resources
+PROGS+=	autofs dumpammap System/Library/Extensions/autofs.kext/Contents/Resources
+PROGS+=	autofs dumpfstab System/Library/Extensions/autofs.kext/Contents/Resources
+PROGS+=	autofs smbremountserver System/Library/Extensions/autofs.kext/Contents/Resources
+.endif
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship
@@ -332,15 +358,6 @@ PROGS+=	network_cmds/spray.tproj spray usr/sbin
 PROGS+=	remote_cmds/talkd ntalkd usr/libexec
 PROGS+=	remote_cmds/telnetd telnetd usr/libexec
 PROGS+=	PowerManagement ioupsd usr/libexec
-PROGS+=	autofs automountd usr/libexec
-PROGS+=	autofs autofsd usr/libexec
-PROGS+=	autofs mount_url usr/libexec
-PROGS+=	autofs od_user_homes usr/libexec
-# autofs.kext's helper tools, which live in the kext bundle on stock macOS.
-PROGS+=	autofs checktrigger System/Library/Extensions/autofs.kext/Contents/Resources
-PROGS+=	autofs dumpammap System/Library/Extensions/autofs.kext/Contents/Resources
-PROGS+=	autofs dumpfstab System/Library/Extensions/autofs.kext/Contents/Resources
-PROGS+=	autofs smbremountserver System/Library/Extensions/autofs.kext/Contents/Resources
 .endif
 
 # ------------------------------------------------------------------
@@ -358,5 +375,4 @@ PROGS+=	diskdev_cmds/quotacheck.tproj quotacheck sbin
 PROGS+=	system_cmds/reboot reboot sbin
 PROGS+=	system_cmds/shutdown shutdown sbin
 PROGS+=	PowerManagement pmset usr/bin
-PROGS+=	autofs automount usr/sbin
 .endif

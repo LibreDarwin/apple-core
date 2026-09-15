@@ -69,5 +69,7 @@ LIBS+=	vim/src/libvterm/src libvterm -
 LIBS+=	syslog/aslcommon libaslcommon -
 
 # bless.xcodeproj's libbless, which kextutil, kextcache and kcditto link
-# statically, as Apple's do.
+# statically, as Apple's do -- so only with MK_KEXT_TOOLS.
+.if ${MK_KEXT_TOOLS:tl} == "yes"
 LIBS+=	bless libbless -
+.endif
