@@ -59,7 +59,7 @@ bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar, pcre: their own bu
 
 ## State
 
-The default set builds clean: **all 261 programs** and **all 21
+The default set builds clean: **all 262 programs** and **all 21
 libraries**, eight of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`, and
 `libcopyfile` and `libremovefile` in `usr/lib/system`). With `MK_PORTS=yes`,
@@ -74,13 +74,25 @@ libxpc's pipe, entitlement and `os_transaction` SPI (`xpc/private.h`,
 `os/transaction_private.h`); Network's `network/conninfo.h`; the kext
 tools' SystemPolicy, KextAudit, CFXPCBridge, launchd, Bom, EFILogin,
 CoreStorage and MediaKit pieces; APFS's purgeable-file, boot-info and
-snapshot fsctls and volume roles (for `libbless`); `KernelManagementClient`;
-and the ifconfig netem models.
+snapshot fsctls and volume roles (for `libbless`); autofs' OpenDirectory
+trigger API, oncrpc renames, ServerInformation, libfakelink, NetFS/NetAuth
+session calls and log-pack types; PowerManagement's libIOReport,
+LockdownMode, SkyLight, MobileGestalt, Apple vendor HID usages and the
+newer power-source types IOKitUser-100231.120.3 predates;
+`KernelManagementClient`; and the ifconfig netem models.  Apple open source
+supplies the rest where it exists: IOKitUser-100231.120.3's power headers,
+configd-1405.120.5's SystemConfiguration private headers,
+SMBClient-538.121.1's client headers, libdispatch-1542.0.4's private
+headers, and xnu's corecrypto, IOReport and hibernation headers.
 
-The three program tiers add 39 entries, of which 20 build. The rest are
-diagnostics and daemons needing headers or Mach routines the public SDK does
-not ship (`kdebug.h`, `libproc_private.h`, `stack_logging.h`,
-`task_read_for_pid()`, …). `vm_stat` joined them with system_cmds-1042.120.1,
+The three program tiers add 50 entries, of which 32 build, among them
+PowerManagement's `pmset` and `ioupsd` and autofs' `automount`,
+`automountd`, `autofsd`, `mount_url`, `od_user_homes` and the helpers
+autofs.kext carries. The rest are diagnostics and daemons needing headers or
+Mach routines the public SDK does not ship (`kdebug.h`,
+`libproc_private.h`, `stack_logging.h`, `task_read_for_pid()`, …), plus
+`telnetd`, whose `authenc.c` has an unmatched `#endif` in the drop, and
+`rtadvd`, whose target lists no sources. `vm_stat` joined them with system_cmds-1042.120.1,
 which reads memory-tagging counters from a newer `struct vm_statistics64` than
 the SDK declares.
 
@@ -99,7 +111,13 @@ AddOn, which the drop does not wire up to the files that use it.
 coder, since Apple's static FastCompression library is not published, so it
 links `libcompression` where stock links `libkxld`. `libbless` leaves out
 `BLSetOFLabelForDevice.c`, the one file needing MediaKit, which nothing
-calls.
+calls. `ioupsd` carries a patch declaring `needsMerge`, which the published
+`upsd.m` tests but never declares: stock ioupsd sets it only when an
+"Inductive In-Band" battery case reuses an already-registered record, so
+merging those cases is left undone and every other device behaves as stock.
+autofs' oncrpc calls bind to `oncrpc.framework` through a generated rename
+header over the SDK's Sun RPC headers, since the framework ships no headers
+of its own.
 
 ## Build system
 

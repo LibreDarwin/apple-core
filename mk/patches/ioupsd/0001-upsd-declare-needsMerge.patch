@@ -1,0 +1,22 @@
+From: somestupidgirl <sunnevanattsol@gmail.com>
+Subject: [PATCH] ioupsd: declare needsMerge, which the drop never sets
+
+upsd.m tests needsMerge before initializing a battery case's AC state,
+but nothing in the published PowerManagement source declares or sets it.
+Stock /usr/libexec/ioupsd (macOS 26.5.2, 25F84) shows the missing code:
+it reads the device's "Transport Type" and, for "Inductive In-Band",
+reuses an already-registered battery case record from a global with the
+flag set; every other device goes through GetPrivateData() with it
+clear.  Declare it false, which is what stock does for all but inductive
+in-band battery cases; merging those is left undone.
+
+--- a/ioupsd/upsd.m	2026-09-15 12:14:58
++++ b/ioupsd/upsd.m	2026-09-15 12:14:58
+@@ -464,6 +464,7 @@
+     IOCFPlugInInterface **  plugInInterface 	= NULL;
+     IOUPSPlugInInterface_v140 ** upsPlugInInterface = NULL;
+     HRESULT                 result              = S_FALSE;
++    bool                    needsMerge          = false;
+     IOReturn                kr;
+     SInt32                  score;
+ 

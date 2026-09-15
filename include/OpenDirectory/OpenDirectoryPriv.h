@@ -36,4 +36,46 @@
 
 #include <OpenDirectory/OpenDirectory.h>
 
+/*
+ * Triggers, for autofs' autofsd.  The public SDK's CFOpenDirectory stubs
+ * export ODTriggerCreateForSearch() and ODTriggerCreateForRecords() but no
+ * header declares them.  Read from CFOpenDirectory in macOS 26.5.2's
+ * (25F84) dyld shared cache: each tests its event mask bit by bit and
+ * appends one notification-name CFString per set bit -- 3, 6 and 6
+ * characters long for the record bits (add, delete, modify) and 3, 6, 6
+ * and 7 for the search bits (add, delete, online, offline), bits 0 and 1
+ * sharing their strings.  Stock /usr/libexec/autofsd passes 0xe
+ * (delete|offline|online) and 0x7 (add|delete|modify), as its source
+ * spells them.
+ */
+typedef struct __ODTrigger *ODTriggerRef;
+typedef CFOptionFlags ODTriggerEventFlags;
+
+enum {
+	kODTriggerRecordEventAdd	= 1,
+	kODTriggerRecordEventDelete	= 2,
+	kODTriggerRecordEventModify	= 4,
+};
+
+enum {
+	kODTriggerSearchAdd		= 1,
+	kODTriggerSearchDelete		= 2,
+	kODTriggerSearchOnline		= 4,
+	kODTriggerSearchOffline		= 8,
+};
+
+__BEGIN_DECLS
+
+ODTriggerRef ODTriggerCreateForRecords(CFAllocatorRef allocator,
+    ODTriggerEventFlags events, CFTypeRef nodenames, CFTypeRef recordtypes,
+    CFTypeRef recordnames, dispatch_queue_t queue,
+    void (^block)(ODTriggerRef trigger, CFStringRef node, CFStringRef type,
+    CFStringRef name));
+
+ODTriggerRef ODTriggerCreateForSearch(CFAllocatorRef allocator,
+    ODTriggerEventFlags events, CFTypeRef searchnames, dispatch_queue_t queue,
+    void (^block)(ODTriggerRef trigger, CFStringRef node));
+
+__END_DECLS
+
 #endif /* __OPENDIRECTORYPRIV_H */

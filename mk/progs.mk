@@ -285,6 +285,7 @@ PROGS+=	kext_tools kextload sbin
 PROGS+=	kext_tools kextutil usr/bin
 PROGS+=	kext_tools kextcache usr/sbin
 PROGS+=	kext_tools kcditto usr/sbin
+PROGS+=	PowerManagement caffeinate usr/bin
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship
@@ -330,6 +331,16 @@ PROGS+=	network_cmds/rtadvd.tproj rtadvd usr/sbin
 PROGS+=	network_cmds/spray.tproj spray usr/sbin
 PROGS+=	remote_cmds/talkd talkd usr/sbin
 PROGS+=	remote_cmds/telnetd telnetd usr/libexec
+PROGS+=	PowerManagement ioupsd usr/libexec
+PROGS+=	autofs automountd usr/libexec
+PROGS+=	autofs autofsd usr/libexec
+PROGS+=	autofs mount_url usr/libexec
+PROGS+=	autofs od_user_homes usr/libexec
+# autofs.kext's helper tools, which live in the kext bundle on stock macOS.
+PROGS+=	autofs checktrigger System/Library/Extensions/autofs.kext/Contents/Resources
+PROGS+=	autofs dumpammap System/Library/Extensions/autofs.kext/Contents/Resources
+PROGS+=	autofs dumpfstab System/Library/Extensions/autofs.kext/Contents/Resources
+PROGS+=	autofs smbremountserver System/Library/Extensions/autofs.kext/Contents/Resources
 .endif
 
 # ------------------------------------------------------------------
@@ -346,4 +357,6 @@ PROGS+=	diskdev_cmds/newfs_fskit newfs_fskit sbin
 PROGS+=	diskdev_cmds/quotacheck.tproj quotacheck sbin
 PROGS+=	system_cmds/reboot reboot sbin
 PROGS+=	system_cmds/shutdown shutdown sbin
+PROGS+=	PowerManagement pmset usr/bin
+PROGS+=	autofs automount usr/sbin
 .endif
