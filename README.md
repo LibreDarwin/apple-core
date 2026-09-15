@@ -54,27 +54,32 @@ off, each enabled independently:
 bmake MK_DIAGNOSTICS=yes        # fs_usage, latency, zprint, vm_stat, gcore, …
 bmake MK_DAEMONS=yes            # telnetd, tftpd, rtadvd, getty, …
 bmake MK_PRIVATE_FRAMEWORKS=yes # tools needing FSKit/APFS/kextmanager
-bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar: their own build systems
+bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar, pcre: their own build systems
 ```
 
 ## State
 
-The default set builds clean: **253 of 261 programs** and **17 of 20
-libraries**, six of them also installed as dylibs under Apple's names
-(`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`). With
-`MK_PORTS=yes`, **zsh**, **tcsh** (with `csh`), **uucp**, **lsof** and
-**xar** build through their own build systems too.
+The default set builds clean: **253 of 261 programs** and **19 of 20
+libraries**, eight of them also installed as dylibs under Apple's names
+(`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`, and
+`libcopyfile` and `libremovefile` in `usr/lib/system`). With `MK_PORTS=yes`,
+**zsh** (with its `pcre` module), **tcsh** (with `csh`), **uucp**, **lsof**,
+**xar** and **pcre** build through their own build systems too.
 
-Twelve entries are listed but not built, and `bmake check` names each:
+Ten entries are listed but not built, and `bmake check` names each:
 
 - blocked on private headers the public SDK does not carry: `nc`
   (`network/conninfo.h`); `syslog`, `syslogd`, `aslmanager` and their
   `libaslcommon` (`os/object_private.h`, `xpc/private.h`); `kextload`,
   `kextutil`, `kextcache` and `kcditto` (SystemPolicy, MultiverseSupport, Bom,
-  EFILogin and CoreStorage headers, none published); `libcopyfile`
-  (`quarantine.h`); `libremovefile` (APFS's purgeable-file ioctls)
+  EFILogin and CoreStorage headers, none published)
 - the `ncurses` port, whose ABI-versioned symbols need `nc_abi.c` built apart
   from the rest of the library, which upstream's Makefiles cannot express
+
+Where no header is published at all, what the build needs is recovered from
+Apple's shipped binaries and says so where it lives: the quarantine SPI,
+APFS's purgeable-file ioctl, `KernelManagementClient`, and the ifconfig netem
+models.
 
 The three program tiers add 39 entries, of which 20 build. The rest are
 diagnostics and daemons needing headers or Mach routines the public SDK does
@@ -93,8 +98,7 @@ binary's because we link the installed libtiff rather than a patched one
 (`-dump` is byte-identical). `libutil` carries FreeBSD's `login_cap`/`getcap`
 and `sbuf` families, which Apple's does not; `su`, `login`, `newgrp`, `getty`
 and `atrun` need them. `libz` is plain zlib, without Apple's vectorised
-AddOn, which the drop does not wire up to the files that use it. zsh is
-built without its `pcre` module, which the public SDK has no headers for.
+AddOn, which the drop does not wire up to the files that use it.
 
 ## Build system
 

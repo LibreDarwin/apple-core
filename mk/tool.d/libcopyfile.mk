@@ -2,10 +2,10 @@
 # /usr/lib/system/libcopyfile.dylib.  The copyfile target's sources and
 # cancellation flavour.
 #
-# BLOCKED: copyfile.c includes <System/sys/content_protection.h> (xnu,
-# private) and <quarantine.h> (the quarantine SPI).  The first is in the
-# ravynos xnu tree; the second is in no SDK or source tree on this machine.
-T_NOBUILD=	yes
-
+# <System/sys/content_protection.h> is xnu's.  <quarantine.h> is published
+# by no one: include/ carries xcode-tools' reconstruction of it, with the
+# pieces copyfile needs beyond libarchive recovered from Apple's shipped
+# libcopyfile and libquarantine (see the header).
 T_SRCS=		copyfile.c xattr_flags.c
 T_CFLAGS+=	-D__DARWIN_NOW_CANCELABLE=1 -I${T_SRCDIR}
+T_INSTALL_NAME=	/usr/lib/system/libcopyfile.dylib

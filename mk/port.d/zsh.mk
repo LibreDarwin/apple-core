@@ -1,9 +1,10 @@
 # zsh(1), from Apple's drop: upstream's tree under zsh/, configured with
 # the flags Apple's wrapper Makefile passes it.
 #
-# --enable-pcre is left out: Apple turn it on for macOS, but the public
-# SDK carries no PCRE headers, so the zsh/pcre module is not built.
-# ponytail: add it back once a pcre port exists.
+# --enable-pcre, as Apple configure it for macOS, against the PCRE 8.44
+# the pcre port stages: its pcre-config on PATH, and its headers, since
+# pcre-config names the host's /usr/local for them.  The module links
+# libpcre.0.dylib by the install name stock macOS has.
 #
 # init.c includes <System/sys/codesign.h> for csops(), which only our
 # include/ carries.  -idirafter reaches it without letting anything there
@@ -14,7 +15,11 @@
 # and usr/share/zsh, where it looks for them.
 P_CONFIGURE_ARGS=	--bindir=/bin --with-tcsetpgrp --enable-multibyte \
 			--enable-unicode9 --enable-max-function-depth=700 \
-			CPPFLAGS='-DUSE_GETCWD -idirafter ${TOP}/include'
+			--enable-pcre \
+			CPPFLAGS='-DUSE_GETCWD -I${PCRE_STAGE}/include -idirafter ${TOP}/include'
+PCRE_STAGE=		${TOP}/build/ports/pcre/stage/usr/local
+# Quoted: PATH may contain spaces, and env takes it as one word only so.
+P_ENV=			"PATH=${PCRE_STAGE}/bin:$$PATH"
 P_PROGS=		../bin/zsh
 P_RELEASE_TREES=	lib/zsh usr/lib/zsh \
 			share/zsh usr/share/zsh

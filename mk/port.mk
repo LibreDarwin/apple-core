@@ -66,6 +66,9 @@
 #			install step; the staged prefix is
 #			${P_STAGEDIR}${P_PREFIX}
 #	P_PREFIX	the prefix the port is configured for (default /usr)
+#	P_ENV		VAR=value words put in the environment of configure,
+#			make and the install step -- a deployment target a
+#			drop's wrapper exports, or a PATH to a staged tool
 #	P_NOSTAGE	set to take P_PROGS straight out of the build
 #			directory rather than running the install step
 #	P_NOBUILD	set to any value to turn the entry into a no-op
@@ -241,14 +244,14 @@ ${P_WORKDIR}/.configured: ${P_CONFDEP}
 .if ${P_BUILDSYS:tl} == "make"
 	@${ECHO} "port: ${P_NAME}: no configure step (Makefile only)"
 .elif ${P_BUILDSYS:tl} == "cmake"
-	cd ${P_OBJDIR} && cmake -G Ninja ${P_BUILDSRC}/${P_CMAKE_SRC} \
+	cd ${P_OBJDIR} && env ${P_ENV} cmake -G Ninja ${P_BUILDSRC}/${P_CMAKE_SRC} \
 		-DCMAKE_INSTALL_PREFIX=${P_PREFIX} \
 		-DCMAKE_BUILD_TYPE=Release \
 		${P_CONFIGURE_ARGS} > ${P_WORKDIR}/configure.log 2>&1 || \
 		{ ${ECHO} "port: ${P_NAME}: configure failed, see ${P_WORKDIR}/configure.log"; \
 		  tail -20 ${P_WORKDIR}/configure.log; exit 1; }
 .else
-	cd ${P_OBJDIR} && ${P_BUILDSRC}/${P_CONFIGURE} \
+	cd ${P_OBJDIR} && env ${P_ENV} ${P_BUILDSRC}/${P_CONFIGURE} \
 		--prefix=${P_PREFIX} \
 		${_AUTOTOOLS_FLAGS} \
 		${P_CONFIGURE_ARGS} > ${P_WORKDIR}/configure.log 2>&1 || \
@@ -265,7 +268,7 @@ ${P_WORKDIR}/.configured: ${P_CONFDEP}
 
 ${P_WORKDIR}/.built: ${P_WORKDIR}/.configured
 	@${ECHO} "port: building ${P_NAME}"
-	cd ${P_OBJDIR} && ${P_MAKE} ${P_MAKE_ARGS} > ${P_WORKDIR}/build.log 2>&1 || \
+	cd ${P_OBJDIR} && env ${P_ENV} ${P_MAKE} ${P_MAKE_ARGS} > ${P_WORKDIR}/build.log 2>&1 || \
 		{ ${ECHO} "port: ${P_NAME}: build failed, see ${P_WORKDIR}/build.log"; \
 		  tail -20 ${P_WORKDIR}/build.log; exit 1; }
 .if defined(P_POST_BUILD)
@@ -281,12 +284,12 @@ ${P_WORKDIR}/.built: ${P_WORKDIR}/.configured
 ${P_WORKDIR}/.staged: ${P_WORKDIR}/.built
 	@${ECHO} "port: staging ${P_NAME}"
 .if ${P_BUILDSYS:tl} == "cmake"
-	cd ${P_OBJDIR} && DESTDIR=${P_STAGEDIR} ${P_MAKE} ${P_MAKE_ARGS} install \
+	cd ${P_OBJDIR} && env ${P_ENV} DESTDIR=${P_STAGEDIR} ${P_MAKE} ${P_MAKE_ARGS} install \
 		> ${P_WORKDIR}/stage.log 2>&1 || \
 		{ ${ECHO} "port: ${P_NAME}: stage failed, see ${P_WORKDIR}/stage.log"; \
 		  tail -20 ${P_WORKDIR}/stage.log; exit 1; }
 .else
-	cd ${P_OBJDIR} && ${P_MAKE} ${P_MAKE_ARGS} install DESTDIR=${P_STAGEDIR} \
+	cd ${P_OBJDIR} && env ${P_ENV} ${P_MAKE} ${P_MAKE_ARGS} install DESTDIR=${P_STAGEDIR} \
 		> ${P_WORKDIR}/stage.log 2>&1 || \
 		{ ${ECHO} "port: ${P_NAME}: stage failed, see ${P_WORKDIR}/stage.log"; \
 		  tail -20 ${P_WORKDIR}/stage.log; exit 1; }

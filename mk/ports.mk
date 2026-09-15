@@ -21,6 +21,8 @@
 # their own; the tree underneath is what is configured, with the flags
 # that Makefile passes.
 # ------------------------------------------------------------------
+# PCRE, before zsh: its pcre module is configured against it.
+PORTS+=	pcre pcre usr/lib
 PORTS+=	zsh/zsh zsh bin
 PORTS+=	tcsh/tcsh tcsh bin
 
