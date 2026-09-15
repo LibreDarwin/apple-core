@@ -11,10 +11,14 @@
 
 #include <sys/cdefs.h>
 
+/* As the SDK's <os/base.h> spells it: without the extern, <os/log.h>'s
+ * OS_EXPORT struct os_log_s _os_log_default becomes a tentative definition. */
+#ifndef OS_EXPORT
 #if defined(__cplusplus)
-#define OS_EXPORT extern "C" __attribute__((visibility("default")))
+#define OS_EXPORT extern "C" __attribute__((__visibility__("default")))
 #else
-#define OS_EXPORT __attribute__((visibility("default")))
+#define OS_EXPORT extern __attribute__((__visibility__("default")))
+#endif
 #endif
 
 #define OS_WEAK			__attribute__((weak_import))

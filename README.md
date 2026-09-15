@@ -59,27 +59,23 @@ bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar, pcre: their own bu
 
 ## State
 
-The default set builds clean: **256 of 261 programs** and **all 20
+The default set builds clean: **all 261 programs** and **all 21
 libraries**, eight of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`, and
 `libcopyfile` and `libremovefile` in `usr/lib/system`). With `MK_PORTS=yes`,
 **zsh** (with its `pcre` module), **tcsh** (with `csh`), **uucp**, **lsof**,
-**xar** and **pcre** build through their own build systems too.
-
-Six entries are listed but not built, and `bmake check` names each:
-
-- blocked on private headers the public SDK does not carry: `nc`
-  (`network/conninfo.h`); `kextload`, `kextutil`, `kextcache` and `kcditto`
-  (SystemPolicy, MultiverseSupport, Bom, EFILogin and CoreStorage headers,
-  none published)
-- the `ncurses` port, whose ABI-versioned symbols need `nc_abi.c` built apart
-  from the rest of the library, which upstream's Makefiles cannot express
+**xar**, **pcre** and **ncurses** (`clear`, `infocmp`, `tic`, `toe`, `tput`,
+`tset`, linked against the system's `libncurses.5.4` as stock macOS's are)
+build through their own build systems too. No entry is left unbuilt.
 
 Where no header is published at all, what the build needs is recovered from
-Apple's shipped binaries and says so where it lives: the quarantine SPI,
+Apple's shipped binaries and says so where it lives: the quarantine SPI;
 libxpc's pipe, entitlement and `os_transaction` SPI (`xpc/private.h`,
-`os/transaction_private.h`), APFS's purgeable-file ioctl,
-`KernelManagementClient`, and the ifconfig netem models.
+`os/transaction_private.h`); Network's `network/conninfo.h`; the kext
+tools' SystemPolicy, KextAudit, CFXPCBridge, launchd, Bom, EFILogin,
+CoreStorage and MediaKit pieces; APFS's purgeable-file, boot-info and
+snapshot fsctls and volume roles (for `libbless`); `KernelManagementClient`;
+and the ifconfig netem models.
 
 The three program tiers add 39 entries, of which 20 build. The rest are
 diagnostics and daemons needing headers or Mach routines the public SDK does
@@ -99,6 +95,11 @@ binary's because we link the installed libtiff rather than a patched one
 and `sbuf` families, which Apple's does not; `su`, `login`, `newgrp`, `getty`
 and `atrun` need them. `libz` is plain zlib, without Apple's vectorised
 AddOn, which the drop does not wire up to the files that use it.
+`kextcache`'s prelinked-kernel lzvn goes through libcompression's raw LZVN
+coder, since Apple's static FastCompression library is not published, so it
+links `libcompression` where stock links `libkxld`. `libbless` leaves out
+`BLSetOFLabelForDevice.c`, the one file needing MediaKit, which nothing
+calls.
 
 ## Build system
 

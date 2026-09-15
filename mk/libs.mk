@@ -67,3 +67,7 @@ LIBS+=	vim/src/libvterm/src libvterm -
 
 # syslog.xcodeproj's shared library, static in Apple's build.
 LIBS+=	syslog/aslcommon libaslcommon -
+
+# bless.xcodeproj's libbless, which kextutil, kextcache and kcditto link
+# statically, as Apple's do.
+LIBS+=	bless libbless -
