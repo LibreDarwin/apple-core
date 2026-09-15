@@ -61,7 +61,7 @@ check:
 STALE_DIRS=	bin sbin usr/bin usr/sbin usr/libexec usr/lib \
 		usr/local/bin usr/local/lib
 ALL_TIERS=	MK_DIAGNOSTICS=yes MK_DAEMONS=yes MK_PRIVATE_FRAMEWORKS=yes \
-		MK_PORTS=yes MK_KEXT_TOOLS=yes MK_AUTOFS=yes
+		MK_PORTS=yes
 
 check-stale:
 	@t=$$(mktemp -d) && trap 'rm -rf "$$t"' EXIT && \

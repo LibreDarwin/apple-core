@@ -47,7 +47,7 @@ release tree.
 
 ### Optional tiers
 
-The default build is the strict coreutils-like set. Six groups are gated
+The default build is the strict coreutils-like set. Four groups are gated
 off, each enabled independently:
 
 ```bash
@@ -55,13 +55,10 @@ bmake MK_DIAGNOSTICS=yes        # fs_usage, latency, zprint, vm_stat, gcore, …
 bmake MK_DAEMONS=yes            # telnetd, tftpd, rtadvd, getty, …
 bmake MK_PRIVATE_FRAMEWORKS=yes # tools needing FSKit/APFS/kextmanager
 bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar, pcre: their own build systems
-bmake MK_KEXT_TOOLS=yes         # kextload, kextutil, kextcache, kcditto, … and libbless
-bmake MK_AUTOFS=yes             # automount, automountd, autofsd and autofs.kext's helpers
 ```
 
-kext_tools and autofs are OS components rather than userland and are
-likely to move to the LibreDarwin OS repository; until then they stay here,
-building, behind their own switches.
+kext_tools and autofs are not part of this tree; they are OS components and
+live in the LibreDarwin OS repository.
 
 ## State
 
@@ -77,27 +74,20 @@ build through their own build systems too. No entry is left unbuilt.
 Where no header is published at all, what the build needs is recovered from
 Apple's shipped binaries and says so where it lives: the quarantine SPI;
 libxpc's pipe, entitlement and `os_transaction` SPI (`xpc/private.h`,
-`os/transaction_private.h`); Network's `network/conninfo.h`; the kext
-tools' SystemPolicy, KextAudit, CFXPCBridge, launchd, Bom, EFILogin,
-CoreStorage and MediaKit pieces; APFS's purgeable-file, boot-info and
-snapshot fsctls and volume roles (for `libbless`); autofs' OpenDirectory
-trigger API, oncrpc renames, ServerInformation, libfakelink, NetFS/NetAuth
-session calls and log-pack types; PowerManagement's libIOReport,
+`os/transaction_private.h`); Network's `network/conninfo.h`; APFS's
+purgeable-file ioctl; the log-pack types; PowerManagement's libIOReport,
 LockdownMode, SkyLight, MobileGestalt, Apple vendor HID usages and the
 newer power-source types IOKitUser-100231.120.3 predates;
 `KernelManagementClient`; and the ifconfig netem models.  Apple open source
 supplies the rest where it exists: IOKitUser-100231.120.3's power headers,
 configd-1405.120.5's SystemConfiguration private headers,
-SMBClient-538.121.1's client headers, libdispatch-1542.0.4's private
-headers, and xnu's corecrypto, IOReport and hibernation headers.
+libdispatch-1542.0.4's private headers, and xnu's corecrypto, IOReport and
+hibernation headers.
 
 The diagnostics, daemons and private-frameworks tiers add 41 entries, and
 all of them build too: the diagnostics (`fs_usage`, `gcore`, `latency`,
 `lsmp`, `stackshot`, `zlog`, …), the daemons, and PowerManagement's `pmset`
-and `ioupsd`. So do the nine kext_tools entries (with `libbless`) under
-`MK_KEXT_TOOLS` and the nine autofs entries — `automount`, `automountd`,
-`autofsd`, `mount_url`, `od_user_homes` and the helpers autofs.kext carries
-— under `MK_AUTOFS`. What they need beyond the public SDK comes from
+and `ioupsd`. What they need beyond the public SDK comes from
 xnu, libmalloc and dyld where Apple publish it, and is recovered from the
 shipped binaries where they do not (`ktrace` session SPI, Background Task
 Management, CoreSymbolication, process responsibility, the os_log hook,
@@ -116,17 +106,11 @@ binary's because we link the installed libtiff rather than a patched one
 and `sbuf` families, which Apple's does not; `su`, `login`, `newgrp`, `getty`
 and `atrun` need them. `libz` is plain zlib, without Apple's vectorised
 AddOn, which the drop does not wire up to the files that use it.
-`kextcache`'s prelinked-kernel lzvn goes through libcompression's raw LZVN
-coder, since Apple's static FastCompression library is not published, so it
-links `libcompression` where stock links `libkxld`. `libbless` leaves out
-`BLSetOFLabelForDevice.c`, the one file needing MediaKit, which nothing
-calls. `ioupsd` carries a patch declaring `needsMerge`, which the published
+`ioupsd` carries a patch declaring `needsMerge`, which the published
 `upsd.m` tests but never declares: stock ioupsd sets it only when an
 "Inductive In-Band" battery case reuses an already-registered record, so
 merging those cases is left undone and every other device behaves as stock.
-autofs' oncrpc calls bind to `oncrpc.framework` through a generated rename
-header over the SDK's Sun RPC headers, since the framework ships no headers
-of its own. `rtadvd`'s sources are gone from network_cmds-741.100.2, which
+`rtadvd`'s sources are gone from network_cmds-741.100.2, which
 keeps only its `run-rtadvd` script while macOS still ships the daemon;
 `mk/patches/rtadvd` restores them verbatim from network_cmds-705.100.5.
 `telnetd` builds Apple's eight-file target, leaving out `authenc.c`, which

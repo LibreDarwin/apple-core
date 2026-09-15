@@ -1,13 +1,13 @@
 /*
- * <Bom/Bom.h> -- the BOMCopier half of the Bom framework, as kext_tools'
- * kc_staging.m and kcditto_main.m use it.
+ * <Bom/Bom.h> -- the BOMCopier half of the Bom framework, which BomCmds'
+ * ditto, mkbom and lsbom reach through <Bom/Bom.h>.
  *
  * Apple publish no copy of this header (BomCmds carries its own, older
- * subset for ditto, without BOMCopierCopy or the copy-operation results).
- * Names and handler shapes are the ones kc_staging.m defines its handlers
- * with; the rest is read from stock /usr/sbin/kcditto (macOS 26.5.2,
- * 25F84), which imports these six functions from Bom and compiles the same
- * file:
+ * subset beside its sources, without BOMCopierCopy or the copy-operation
+ * results).  Names and handler shapes follow kext_tools' kc_staging.m, for
+ * which this was first written; the rest is read from stock
+ * /usr/sbin/kcditto (macOS 26.5.2, 25F84), which imports these six
+ * functions from Bom:
  *
  *  - its file-error handler logs and returns 0, kc_staging.m's
  *    BOMCopierContinue;

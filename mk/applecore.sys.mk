@@ -60,21 +60,14 @@ ECHO=		echo
 #	MK_PORTS		components built through their own build
 #				system by mk/port.mk -- off because each
 #				runs a full configure and make
-#	MK_KEXT_TOOLS		kext_tools and the libbless they link --
-#				OS components, likely bound for the
-#				LibreDarwin OS repository
-#	MK_AUTOFS		automount and the autofs daemons and
-#				helpers -- likewise
 #
 # The tiers are gated where their entries are listed (mk/progs.mk,
-# mk/libs.mk, mk/ports.mk), so every name is written in exactly one place.
+# mk/ports.mk), so every name is written in exactly one place.
 #
 MK_DIAGNOSTICS?=	no
 MK_DAEMONS?=		no
 MK_PRIVATE_FRAMEWORKS?=	no
 MK_PORTS?=		no
-MK_KEXT_TOOLS?=		no
-MK_AUTOFS?=		no
 
 # Per-entry opt-outs, for leaving one entry out without editing the
 # inventory:  bmake DISABLED_PROGS="ifconfig su"

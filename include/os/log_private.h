@@ -2,11 +2,10 @@
  * <os/log_private.h> -- apple-core's stand-in for libtrace's userspace
  * private logging header.
  *
- * Apple publish the userspace copy nowhere.  autofs' automount calls
- * os_log_with_args(), which libsystem_trace exports and stock
- * /usr/sbin/automount imports; xnu-12377.121.6's libkern/os/log_private.h
- * publishes the declaration of the same function, copied here.  Only what
- * the tree uses is declared.
+ * Apple publish the userspace copy nowhere.  os_log_with_args(), which
+ * libsystem_trace exports and syslog's libsystem_asl sources call, is
+ * declared as xnu-12377.121.6's libkern/os/log_private.h publishes it.
+ * Only what the tree uses is declared.
  */
 #ifndef __OS_LOG_PRIVATE_H__
 #define __OS_LOG_PRIVATE_H__

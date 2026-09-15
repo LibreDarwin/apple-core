@@ -25,9 +25,6 @@
 [submodule "src/PowerManagement"]
 	path = src/PowerManagement
 	url = https://github.com/apple-oss-distributions/PowerManagement
-[submodule "src/autofs"]
-	path = src/autofs
-	url = https://github.com/apple-oss-distributions/autofs.git
 [submodule "src/adv_cmds"]
 	path = src/adv_cmds
 	url = https://github.com/apple-oss-distributions/adv_cmds.git
@@ -79,9 +76,6 @@
 [submodule "src/bash"]
 	path = src/bash
 	url = https://github.com/apple-oss-distributions/bash.git
-[submodule "src/bless"]
-	path = src/bless
-	url = https://github.com/apple-oss-distributions/bless.git
 [submodule "src/bzip2"]
 	path = src/bzip2
 	url = https://github.com/apple-oss-distributions/bzip2.git
@@ -94,9 +88,6 @@
 [submodule "src/ipsec"]
 	path = src/ipsec
 	url = https://github.com/apple-oss-distributions/ipsec.git
-[submodule "src/kext_tools"]
-	path = src/kext_tools
-	url = https://github.com/apple-oss-distributions/kext_tools.git
 [submodule "src/ksh"]
 	path = src/ksh
 	url = https://github.com/apple-oss-distributions/ksh.git

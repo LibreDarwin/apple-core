@@ -1,8 +1,7 @@
 /*
  * <os/feature_private.h> -- the feature-flags SPI (libsystem_featureflags).
  *
- * Apple publish no copy of this header.  kext_tools' security.c includes it
- * and calls nothing from it; system_cmds' atrun calls
+ * Apple publish no copy of this header.  system_cmds' atrun calls
  * os_feature_enabled(cronBTMToggle, cronBTMCheck).  Stock /usr/libexec/atrun
  * (macOS 26.5.2, 25F84) compiles that to _os_feature_enabled_impl("cronBTMToggle",
  * "cronBTMCheck") -- the two tokens as C strings -- and tests the result as
