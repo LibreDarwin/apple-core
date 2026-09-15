@@ -85,14 +85,15 @@ configd-1405.120.5's SystemConfiguration private headers,
 SMBClient-538.121.1's client headers, libdispatch-1542.0.4's private
 headers, and xnu's corecrypto, IOReport and hibernation headers.
 
-The three program tiers add 50 entries, of which 32 build, among them
-PowerManagement's `pmset` and `ioupsd` and autofs' `automount`,
-`automountd`, `autofsd`, `mount_url`, `od_user_homes` and the helpers
-autofs.kext carries. The rest are diagnostics and daemons needing headers or
-Mach routines the public SDK does not ship (`kdebug.h`,
-`libproc_private.h`, `stack_logging.h`, `task_read_for_pid()`, …), plus
-`telnetd`, whose `authenc.c` has an unmatched `#endif` in the drop, and
-`rtadvd`, whose target lists no sources. `vm_stat` joined them with system_cmds-1042.120.1,
+The three program tiers add 50 entries, and all of them build too: the
+diagnostics (`fs_usage`, `gcore`, `latency`, `lsmp`, `stackshot`, `zlog`,
+…), the daemons, PowerManagement's `pmset` and `ioupsd`, and autofs'
+`automount`, `automountd`, `autofsd`, `mount_url`, `od_user_homes` and the
+helpers autofs.kext carries. What they need beyond the public SDK comes from
+xnu, libmalloc and dyld where Apple publish it, and is recovered from the
+shipped binaries where they do not (`ktrace` session SPI, Background Task
+Management, CoreSymbolication, process responsibility, the os_log hook,
+`task_read_for_pid()`). `vm_stat` joined them with system_cmds-1042.120.1,
 which reads memory-tagging counters from a newer `struct vm_statistics64` than
 the SDK declares.
 
@@ -117,7 +118,14 @@ calls. `ioupsd` carries a patch declaring `needsMerge`, which the published
 merging those cases is left undone and every other device behaves as stock.
 autofs' oncrpc calls bind to `oncrpc.framework` through a generated rename
 header over the SDK's Sun RPC headers, since the framework ships no headers
-of its own.
+of its own. `rtadvd`'s sources are gone from network_cmds-741.100.2, which
+keeps only its `run-rtadvd` script while macOS still ships the daemon;
+`mk/patches/rtadvd` restores them verbatim from network_cmds-705.100.5.
+`telnetd` builds Apple's eight-file target, leaving out `authenc.c`, which
+the target never compiled and which does not compile. `talkd` installs as
+`/usr/libexec/ntalkd`, the name and place stock macOS gives it.
+`fs_usage`, `latency`, `sc_usage` and `zprint` link libutil statically
+where stock links `libutil.dylib`.
 
 ## Build system
 

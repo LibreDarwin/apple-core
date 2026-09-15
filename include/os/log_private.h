@@ -28,6 +28,22 @@ void os_log_with_args(os_log_t oslog, os_log_type_t type, const char *format,
  */
 typedef struct os_log_pack_s *os_log_pack_t;
 
+/*
+ * The in-process log hook, for system_cmds' gcore, which mirrors os_log
+ * output to stderr through it.  libsystem_trace exports both functions.
+ * Read from libsystem_trace in macOS 26.5.2's (25F84) dyld shared cache:
+ * os_log_set_hook() hands its level and its block on to its implementation
+ * (with NULL between them) and gcore keeps its result as the previous hook
+ * it chains to; os_log_copy_message_string() reads the message's fields
+ * through its one pointer argument before composing the string gcore
+ * prints and frees.
+ */
+typedef struct os_log_message_s *os_log_message_t;
+typedef void (^os_log_hook_t)(os_log_type_t type, os_log_message_t msg);
+
+os_log_hook_t os_log_set_hook(os_log_type_t level, os_log_hook_t hook);
+char *os_log_copy_message_string(os_log_message_t msg);
+
 __END_DECLS
 
 #endif /* __OS_LOG_PRIVATE_H__ */
