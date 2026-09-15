@@ -59,27 +59,27 @@ bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar, pcre: their own bu
 
 ## State
 
-The default set builds clean: **253 of 261 programs** and **19 of 20
+The default set builds clean: **256 of 261 programs** and **all 20
 libraries**, eight of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`, and
 `libcopyfile` and `libremovefile` in `usr/lib/system`). With `MK_PORTS=yes`,
 **zsh** (with its `pcre` module), **tcsh** (with `csh`), **uucp**, **lsof**,
 **xar** and **pcre** build through their own build systems too.
 
-Ten entries are listed but not built, and `bmake check` names each:
+Six entries are listed but not built, and `bmake check` names each:
 
 - blocked on private headers the public SDK does not carry: `nc`
-  (`network/conninfo.h`); `syslog`, `syslogd`, `aslmanager` and their
-  `libaslcommon` (`os/object_private.h`, `xpc/private.h`); `kextload`,
-  `kextutil`, `kextcache` and `kcditto` (SystemPolicy, MultiverseSupport, Bom,
-  EFILogin and CoreStorage headers, none published)
+  (`network/conninfo.h`); `kextload`, `kextutil`, `kextcache` and `kcditto`
+  (SystemPolicy, MultiverseSupport, Bom, EFILogin and CoreStorage headers,
+  none published)
 - the `ncurses` port, whose ABI-versioned symbols need `nc_abi.c` built apart
   from the rest of the library, which upstream's Makefiles cannot express
 
 Where no header is published at all, what the build needs is recovered from
 Apple's shipped binaries and says so where it lives: the quarantine SPI,
-APFS's purgeable-file ioctl, `KernelManagementClient`, and the ifconfig netem
-models.
+libxpc's pipe, entitlement and `os_transaction` SPI (`xpc/private.h`,
+`os/transaction_private.h`), APFS's purgeable-file ioctl,
+`KernelManagementClient`, and the ifconfig netem models.
 
 The three program tiers add 39 entries, of which 20 build. The rest are
 diagnostics and daemons needing headers or Mach routines the public SDK does

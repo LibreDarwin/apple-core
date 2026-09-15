@@ -95,13 +95,10 @@ extern const char qtn_xattr_name[]
  *	__qtn_file_get_timestamp	__qtn_file_set_timestamp
  *	__qtn_label_name
  *
- *	__qtn_proc_alloc		__qtn_proc_free
  *	__qtn_proc_clone		__qtn_proc_init
  *	__qtn_proc_init_with_data	__qtn_proc_init_with_self
- *	__qtn_proc_apply_to_pid		__qtn_proc_apply_to_self
- *	__qtn_proc_to_data
- *	__qtn_proc_get_flags		__qtn_proc_set_flags
- *	__qtn_proc_get_identifier	__qtn_proc_set_identifier
+ *	__qtn_proc_apply_to_pid		__qtn_proc_to_data
+ *	__qtn_proc_get_flags		__qtn_proc_get_identifier
  *	__qtn_proc_get_metadata		__qtn_proc_set_metadata
  *	__qtn_proc_get_metadata_size
  *	__qtn_proc_get_path_exclusion_pattern
@@ -131,5 +128,28 @@ extern int qtn_file_init_with_data(qtn_file_t qf, const void *data, size_t len)
     __asm__("__qtn_file_init_with_data");
 extern int qtn_file_to_data(qtn_file_t qf, char *buf, size_t *len)
     __asm__("__qtn_file_to_data");
+
+/*
+ * Added for syslogd, which quarantines itself at startup.  Read from
+ * libquarantine in macOS 26.5.2's dyld shared cache; stock
+ * /usr/sbin/syslogd passes 0x6 to set_flags, QTN_FLAG_SANDBOX |
+ * QTN_FLAG_HARD above, as its source spells it:
+ *
+ *  - alloc takes nothing and returns a zeroed 0x1a0-byte malloc.
+ *  - set_identifier strlcpy()s into a 0x100-byte field: 0, or ERANGE.
+ *  - set_flags stores a 32-bit word: 0, or EINVAL past bit 12.
+ *  - apply_to_self tail-calls __qtn_proc_apply_to_pid(qp, 0).
+ *  - free frees one inner buffer and the object, returning nothing.
+ */
+extern qtn_proc_t qtn_proc_alloc(void)
+    __asm__("__qtn_proc_alloc");
+extern void qtn_proc_free(qtn_proc_t qp)
+    __asm__("__qtn_proc_free");
+extern int qtn_proc_set_identifier(qtn_proc_t qp, const char *identifier)
+    __asm__("__qtn_proc_set_identifier");
+extern int qtn_proc_set_flags(qtn_proc_t qp, uint32_t flags)
+    __asm__("__qtn_proc_set_flags");
+extern int qtn_proc_apply_to_self(qtn_proc_t qp)
+    __asm__("__qtn_proc_apply_to_self");
 
 #endif /* __QUARANTINE_H__ */
