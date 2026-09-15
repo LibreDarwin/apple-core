@@ -59,17 +59,19 @@ bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar: their own build sy
 
 ## State
 
-The default set builds clean: **252 of 256 programs** and **17 of 20
+The default set builds clean: **253 of 261 programs** and **17 of 20
 libraries**, six of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`). With
 `MK_PORTS=yes`, **zsh**, **tcsh** (with `csh`), **uucp**, **lsof** and
 **xar** build through their own build systems too.
 
-Eight entries are listed but not built, and `bmake check` names each:
+Twelve entries are listed but not built, and `bmake check` names each:
 
 - blocked on private headers the public SDK does not carry: `nc`
   (`network/conninfo.h`); `syslog`, `syslogd`, `aslmanager` and their
-  `libaslcommon` (`os/object_private.h`, `xpc/private.h`); `libcopyfile`
+  `libaslcommon` (`os/object_private.h`, `xpc/private.h`); `kextload`,
+  `kextutil`, `kextcache` and `kcditto` (SystemPolicy, MultiverseSupport, Bom,
+  EFILogin and CoreStorage headers, none published); `libcopyfile`
   (`quarantine.h`); `libremovefile` (APFS's purgeable-file ioctls)
 - the `ncurses` port, whose ABI-versioned symbols need `nc_abi.c` built apart
   from the rest of the library, which upstream's Makefiles cannot express

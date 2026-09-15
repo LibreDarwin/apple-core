@@ -280,6 +280,11 @@ PROGS+=	kext_tools kextfind usr/sbin
 PROGS+=	kext_tools kextlibs usr/sbin
 PROGS+=	kext_tools kextstat usr/sbin
 PROGS+=	kext_tools mkextunpack usr/sbin
+PROGS+=	kext_tools kextunload sbin
+PROGS+=	kext_tools kextload sbin
+PROGS+=	kext_tools kextutil usr/bin
+PROGS+=	kext_tools kextcache usr/sbin
+PROGS+=	kext_tools kcditto usr/sbin
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship

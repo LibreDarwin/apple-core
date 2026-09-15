@@ -1,0 +1,30 @@
+From: somestupidgirl <sunnevanattsol@gmail.com>
+Subject: [PATCH] kext_tools: define kextunload's longopt once
+
+kextunload_main.h defines `int longopt = 0;', and both kextunload_main.c
+and KernelManagementShims/kextunload.m include it, so the link sees two
+strong definitions of _longopt.  The header now declares it and
+kextunload_main.c, which parses the options, defines it.
+
+--- a/kextunload_main.h	2026-09-15 00:25:00
++++ b/kextunload_main.h	2026-09-15 00:25:00
+@@ -64,7 +64,7 @@
+ 
+ #define kOptChars  "b:c:hm:pqr:v"
+ 
+-int longopt = 0;
++extern int longopt;
+ 
+ static struct option sOptInfo[] = {
+     { kOptNameHelp,                  no_argument,        NULL, kOptHelp },
+--- a/kextunload_main.c	2026-09-15 00:25:00
++++ b/kextunload_main.c	2026-09-15 00:25:00
+@@ -28,6 +28,8 @@
+ #include <IOKit/kext/OSKextPrivate.h>
+ 
+ #include "kextunload_main.h"
++
++int longopt = 0;
+ #include "KernelManagementShims/Shims.h"
+ 
+ const char * progname = "(unknown)";
