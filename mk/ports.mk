@@ -29,5 +29,7 @@ PORTS+=	tcsh/tcsh tcsh bin
 # ------------------------------------------------------------------
 PORTS+=	lsof/lsof lsof usr/sbin
 PORTS+=	uucp/uucp uucp usr/bin
+PORTS+=	ncurses ncurses usr/bin
+PORTS+=	xar xar usr/bin
 
 .endif # MK_PORTS

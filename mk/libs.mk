@@ -64,3 +64,6 @@ LIBS+=	bash/bash-3.2/lib/glob libglob -
 
 # vim's terminal emulator, static in Apple's build.
 LIBS+=	vim/src/libvterm/src libvterm -
+
+# syslog.xcodeproj's shared library, static in Apple's build.
+LIBS+=	syslog/aslcommon libaslcommon -

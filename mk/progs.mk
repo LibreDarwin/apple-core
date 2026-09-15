@@ -275,6 +275,7 @@ PROGS+=	syslog/aslmanager.tproj aslmanager usr/sbin
 PROGS+=	screen/screen screen usr/bin
 PROGS+=	vim/src vim usr/bin
 PROGS+=	vim/src/xxd xxd usr/bin
+PROGS+=	PlistBuddy PlistBuddy usr/libexec
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship

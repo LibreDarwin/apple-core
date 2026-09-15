@@ -5,10 +5,8 @@
 # longer has; Apple's wrapper points it at the SDK instead, and so does
 # this.
 #
-# BLOCKED: dialects/darwin/libproc/dlsof.h includes <sys/vsock_private.h>,
-# which is in no SDK or source tree on this machine (the ravynos xnu tree
-# predates it).
-P_NOBUILD=	yes
+# dialects/darwin/libproc/dlsof.h includes <sys/vsock_private.h>, which the
+# public SDK lacks; include/sys carries xnu's, reached with -idirafter.
 
 SDKROOT!=	xcrun --show-sdk-path
 P_BUILDSYS=	make

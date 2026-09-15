@@ -54,22 +54,25 @@ off, each enabled independently:
 bmake MK_DIAGNOSTICS=yes        # fs_usage, latency, zprint, vm_stat, gcore, …
 bmake MK_DAEMONS=yes            # telnetd, tftpd, rtadvd, getty, …
 bmake MK_PRIVATE_FRAMEWORKS=yes # tools needing FSKit/APFS/kextmanager
-bmake MK_PORTS=yes              # zsh, tcsh, uucp: built through their own configure
+bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar: their own build systems
 ```
 
 ## State
 
-The default set builds clean: **247 of 251 programs** and **17 of 19
+The default set builds clean: **248 of 252 programs** and **17 of 20
 libraries**, six of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`). With
-`MK_PORTS=yes`, **zsh**, **tcsh** (with `csh`) and **uucp** build through
-their own configure too.
+`MK_PORTS=yes`, **zsh**, **tcsh** (with `csh`), **uucp**, **lsof** and
+**xar** build through their own build systems too.
 
-Seven entries are blocked on private headers the public SDK does not carry,
-and `bmake check` lists them as such: `nc` (`network/conninfo.h`), `syslog`,
-`syslogd` and `aslmanager` (`configuration_profile.h`), `libcopyfile`
-(`quarantine.h`), `libremovefile` (APFS's purgeable-file ioctls) and the
-`lsof` port (`sys/vsock_private.h`).
+Eight entries are listed but not built, and `bmake check` names each:
+
+- blocked on private headers the public SDK does not carry: `nc`
+  (`network/conninfo.h`); `syslog`, `syslogd`, `aslmanager` and their
+  `libaslcommon` (`os/object_private.h`, `xpc/private.h`); `libcopyfile`
+  (`quarantine.h`); `libremovefile` (APFS's purgeable-file ioctls)
+- the `ncurses` port, whose ABI-versioned symbols need `nc_abi.c` built apart
+  from the rest of the library, which upstream's Makefiles cannot express
 
 The three program tiers add 39 entries, of which 20 build. The rest are
 diagnostics and daemons needing headers or Mach routines the public SDK does

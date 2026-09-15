@@ -1,142 +1,300 @@
-/*-
- * Public Domain dedication for darwintools.
+/*
+ * Copyright (c) 2010 Apple Inc. All Rights Reserved.
  *
- * <CommonCrypto/CommonDigestSPI.h> shim: Apple's SPI header exposes
- * streaming digest context (CCDigestCtx) plus the CCDigestAlg enum,
- * but none of it ships in the public SDK even though mtree(8)'s
- * sources use it.  Rebuild the needed surface on top of the public
- * CommonDigest.h API.
+ * @APPLE_LICENSE_HEADER_START@
+ *
+ * This file contains Original Code and/or Modifications of Original Code
+ * as defined in and that are subject to the Apple Public Source License
+ * Version 2.0 (the 'License'). You may not use this file except in
+ * compliance with the License. Please obtain a copy of the License at
+ * http://www.opensource.apple.com/apsl/ and read it before using this
+ * file.
+ *
+ * The Original Code and all software distributed under the License are
+ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
+ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
+ * Please see the License for the specific language governing rights and
+ * limitations under the License.
+ *
+ * @APPLE_LICENSE_HEADER_END@
  */
 
-#ifndef _CC_COMMON_DIGEST_SPI_H_
-#define _CC_COMMON_DIGEST_SPI_H_
+#ifndef	_CC_DigestSPI_H_
+#define _CC_DigestSPI_H_
+
+#include <stdint.h>
+#include <sys/types.h>
+
+#if defined(_MSC_VER)
+#include <availability.h>
+#else
+#include <os/availability.h>
+#endif
 
 #include <CommonCrypto/CommonDigest.h>
 
-__BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/* Digest algorithm selector (values match Apple's SPI). */
+
+/*!
+    @enum       CCDigestAlgorithm
+    @abstract   Algorithms implemented in this module.
+
+    @constant     kCCDigestNone          Digest Selector for "no digest"
+    @constant     kCCDigestMD2           MD2 digest, Deprecated in iPhoneOS 11.0 and MacOSX10.13
+    @constant     kCCDigestMD4           MD4 digest, Deprecated in iPhoneOS 11.0 and MacOSX10.13
+    @constant     kCCDigestMD5           MD5 digest, Deprecated in iPhoneOS 13.0 and MacOSX10.15
+    @constant     kCCDigestRMD160        RMD 160 bit digest, Deprecated in iPhoneOS 13.0 and MacOSX10.15
+    @constant     kCCDigestSHA1          SHA-1 digest, Deprecated in iPhoneOS 13.0 and MacOSX10.15
+    @constant     kCCDigestSHA224        SHA-2 224 bit digest
+    @constant     kCCDigestSHA256        SHA-2 256 bit digest
+    @constant     kCCDigestSHA384        SHA-2 384 bit digest
+    @constant     kCCDigestSHA512        SHA-2 512 bit digest
+    @constant     kCCDigestSHA3_224      SHA-3 224 bit digest
+    @constant     kCCDigestSHA3_256      SHA-3 256 bit digest
+    @constant     kCCDigestSHA3_384      SHA-3 384 bit digest
+    @constant     kCCDigestSHA3_512      SHA-3 512 bit digest
+ */
+
 enum {
-	kCCDigestNone = 0,
-	kCCDigestMD5,
-	kCCDigestSHA1,
-	kCCDigestSHA224,
-	kCCDigestSHA256,
-	kCCDigestSHA384,
-	kCCDigestSHA512,
-	kCCDigestRMD160		/* RIPEMD-160: not implemented here */
+    kCCDigestNone = 0,
+	kCCDigestMD2 API_DEPRECATED(CC_DIGEST_DEPRECATION_WARNING, macos(10.4, 10.13), ios(5.0, 11.0)) = 1,
+	kCCDigestMD4 API_DEPRECATED(CC_DIGEST_DEPRECATION_WARNING, macos(10.4, 10.13), ios(5.0, 11.0)) = 2,
+	kCCDigestMD5 API_DEPRECATED(CC_DIGEST_DEPRECATION_WARNING, macos(10.4, 10.15), ios(5.0, 13.0)) = 3,
+	kCCDigestRMD160 API_DEPRECATED(CC_DIGEST_DEPRECATION_WARNING, macos(10.4, 10.15), ios(5.0, 13.0)) = 5,
+	kCCDigestSHA1 API_DEPRECATED(CC_DIGEST_DEPRECATION_WARNING, macos(10.4, 10.15), ios(5.0, 13.0)) = 8,
+    kCCDigestSHA224 = 9,
+    kCCDigestSHA256 = 10,
+    kCCDigestSHA384 = 11,
+    kCCDigestSHA512 = 12,
+    kCCDigestSHA3_224 = 13,
+    kCCDigestSHA3_256 = 14,
+    kCCDigestSHA3_384 = 15,
+    kCCDigestSHA3_512 = 16,
+
+    kCCDigestMax
 };
-typedef uint32_t CCDigestAlg;
+typedef uint32_t CCDigestAlgorithm;
+
+// Hold this until Heimdal has changed.
+
+#define CCDigestAlg CCDigestAlgorithm
+
+/*!
+    @typedef    CCDigestCtx
+    @abstract   Digest context.
+ */
+
+#define CC_DIGEST_SIZE 1032
+typedef struct CCDigestCtx_t {
+    uint8_t context[CC_DIGEST_SIZE];
+} CCDigestCtx, *CCDigestRef;
+
+/**************************************************************************/
+/* SPI Only                                                               */
+/**************************************************************************/
 
 /*
- * Streaming digest context.  Apple's real struct is opaque; ours is a
- * tagged union over the public CC_*_CTX types.
+ * This information will remain SPI - internal functions available
+ * to callers not needing a stable ABI that have a need to provide
+ * their own memory for use as contexts and return digest values.
  */
-typedef struct {
-	CCDigestAlg	alg;
-	union {
-		CC_MD5_CTX	md5;
-		CC_SHA1_CTX	sha1;
-		CC_SHA256_CTX	sha224;
-		CC_SHA256_CTX	sha256;
-		CC_SHA512_CTX	sha384;
-		CC_SHA512_CTX	sha512;
-	} u;
-} CCDigestCtx;
 
-static inline int
-CCDigestInit(CCDigestAlg algorithm, CCDigestCtx *ctx)
-{
-	if (ctx == NULL)
-		return -1;
-	ctx->alg = algorithm;
-	switch (algorithm) {
-	case kCCDigestMD5:
-		return CC_MD5_Init(&ctx->u.md5) ? 0 : -1;
-	case kCCDigestSHA1:
-		return CC_SHA1_Init(&ctx->u.sha1) ? 0 : -1;
-	case kCCDigestSHA224:
-		return CC_SHA224_Init(&ctx->u.sha224) ? 0 : -1;
-	case kCCDigestSHA256:
-		return CC_SHA256_Init(&ctx->u.sha256) ? 0 : -1;
-	case kCCDigestSHA384:
-		return CC_SHA384_Init(&ctx->u.sha384) ? 0 : -1;
-	case kCCDigestSHA512:
-		return CC_SHA512_Init(&ctx->u.sha512) ? 0 : -1;
-	default:
-		return -1;
-	}
+
+/*!
+    @function   CCDigestInit
+    @abstract   Initialize a CCDigestCtx for a digest.
+
+    @param      algorithm   Digest algorithm to perform.
+    @param      ctx         A digest context.
+
+    returns 0 on success.
+ */
+
+int
+CCDigestInit(CCDigestAlgorithm algorithm, CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+
+
+/**************************************************************************/
+/* Future API                                                             */
+/**************************************************************************/
+
+/*
+ * These functions will be put out for API review after this release.  For
+ * right now we're "road testing" them internally.
+ */
+
+/*!
+    @function   CCDigest
+    @abstract   Stateless, one-shot Digest function.
+
+    @param      algorithm   Digest algorithm to perform.
+    @param      data        The data to digest.
+    @param      length      The length of the data to digest.
+    @param      output      The digest bytes (space provided by the caller).
+
+    Output is written to caller-supplied buffer, as in CCDigestFinal().
+ */
+
+int
+CCDigest(CCDigestAlgorithm algorithm,
+         const uint8_t *data, size_t length, uint8_t *output)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+/*!
+    @function   CCDigestCreate
+    @abstract   Allocate and initialize a CCDigestCtx for a digest.
+
+    @param      alg   Digest algorithm to setup.
+
+    returns a pointer to a digestRef on success.
+ */
+
+CCDigestRef
+CCDigestCreate(CCDigestAlgorithm alg)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+/*!
+    @function   CCDigestUpdate
+    @abstract   Continue to digest data.
+
+    @param      ctx         A digest context.
+    @param      data        The data to digest.
+    @param      length      The length of the data to digest.
+
+    returns 0 on success.
+ */
+
+int
+CCDigestUpdate(CCDigestRef ctx, const void *data, size_t length)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+/*!
+    @function   CCDigestFinal
+    @abstract   Conclude digest operations and produce the digest output.
+
+    @param      ctx         A digest context.
+    @param      output      The digest bytes (space provided by the caller).
+
+    returns 0 on success.
+ */
+
+int
+CCDigestFinal(CCDigestRef ctx, uint8_t *output)
+API_AVAILABLE(macos(10.7), ios(5.0));
+/*!
+    @function   CCDigestDestroy
+    @abstract   Clear and free a CCDigestCtx
+
+    @param      ctx         A digest context.
+ */
+
+
+void
+CCDigestDestroy(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+/*!
+    @function   CCDigestReset
+    @abstract   Clear and re-initialize a CCDigestCtx for the same algorithm.
+
+    @param      ctx         A digest context.
+ */
+
+void
+CCDigestReset(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+/*!
+ @function   CCDigestGetBlockSize
+ @abstract   Provides the block size of the digest algorithm
+
+ @param      algorithm         A digest algorithm selector.
+
+ returns 0 on failure or the block size on success.
+ */
+
+size_t
+CCDigestGetBlockSize(CCDigestAlgorithm algorithm)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+
+
+/*!
+ @function   CCDigestGetOutputSize
+ @abstract   Provides the digest output size of the digest algorithm
+
+ @param      algorithm         A digest algorithm selector.
+
+ returns 0 on failure or the digest output size on success.
+ */
+
+size_t
+CCDigestGetOutputSize(CCDigestAlgorithm algorithm)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+/*!
+ @function   CCDigestGetBlockSizeFromRef
+ @abstract   Provides the block size of the digest algorithm
+
+ @param      ctx         A digest context.
+
+ returns 0 on failure or the block size on success.
+ */
+
+size_t
+CCDigestGetBlockSizeFromRef(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+// Until Heimdal Changes
+// #define CCDigestBlockSize CCDigestGetBlockSizeFromRef
+size_t
+CCDigestBlockSize(CCDigestRef ctx)
+API_DEPRECATED_WITH_REPLACEMENT("CCDigestGetBlockSizeFromRef", macos(10.7, 10.14));
+
+/*!
+ @function   CCDigestGetOutputSizeFromRef
+ @abstract   Provides the digest output size of the digest algorithm
+
+ @param      ctx         A digest context.
+
+ returns 0 on failure or the digest output size on success.
+ */
+
+size_t
+CCDigestGetOutputSizeFromRef(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+// Until Heimdal Changes
+// #define CCDigestOutputSize CCDigestGetOutputSizeFromRef
+size_t
+CCDigestOutputSize(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+
+
+const uint8_t *
+CCDigestOID(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+size_t
+CCDigestOIDLen(CCDigestRef ctx)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+CCDigestRef
+CCDigestCreateByOID(const uint8_t *OID, size_t OIDlen)
+API_AVAILABLE(macos(10.7), ios(5.0));
+
+
+
+#ifdef __cplusplus
 }
+#endif
 
-static inline int
-CCDigestUpdate(CCDigestCtx *ctx, const void *data, size_t len)
-{
-	if (ctx == NULL || data == NULL)
-		return -1;
-	switch (ctx->alg) {
-	case kCCDigestMD5:
-		return CC_MD5_Update(&ctx->u.md5, data, (CC_LONG)len) ? 0 : -1;
-	case kCCDigestSHA1:
-		return CC_SHA1_Update(&ctx->u.sha1, data, (CC_LONG)len) ? 0 : -1;
-	case kCCDigestSHA224:
-		return CC_SHA224_Update(&ctx->u.sha224, data, (CC_LONG)len) ? 0 : -1;
-	case kCCDigestSHA256:
-		return CC_SHA256_Update(&ctx->u.sha256, data, (CC_LONG)len) ? 0 : -1;
-	case kCCDigestSHA384:
-		return CC_SHA384_Update(&ctx->u.sha384, data, (CC_LONG)len) ? 0 : -1;
-	case kCCDigestSHA512:
-		return CC_SHA512_Update(&ctx->u.sha512, data, (CC_LONG)len) ? 0 : -1;
-	default:
-		return -1;
-	}
-}
-
-static inline int
-CCDigestFinal(CCDigestCtx *ctx, unsigned char *output)
-{
-	if (ctx == NULL || output == NULL)
-		return -1;
-	switch (ctx->alg) {
-	case kCCDigestMD5:
-		return CC_MD5_Final(output, &ctx->u.md5) ? 0 : -1;
-	case kCCDigestSHA1:
-		return CC_SHA1_Final(output, &ctx->u.sha1) ? 0 : -1;
-	case kCCDigestSHA224:
-		return CC_SHA224_Final(output, &ctx->u.sha224) ? 0 : -1;
-	case kCCDigestSHA256:
-		return CC_SHA256_Final(output, &ctx->u.sha256) ? 0 : -1;
-	case kCCDigestSHA384:
-		return CC_SHA384_Final(output, &ctx->u.sha384) ? 0 : -1;
-	case kCCDigestSHA512:
-		return CC_SHA512_Final(output, &ctx->u.sha512) ? 0 : -1;
-	default:
-		return -1;
-	}
-}
-
-static inline size_t
-CCDigestOutputSize(const CCDigestCtx *ctx)
-{
-	if (ctx == NULL)
-		return 0;
-	switch (ctx->alg) {
-	case kCCDigestMD5:
-		return CC_MD5_DIGEST_LENGTH;
-	case kCCDigestSHA1:
-		return CC_SHA1_DIGEST_LENGTH;
-	case kCCDigestSHA224:
-		return CC_SHA224_DIGEST_LENGTH;
-	case kCCDigestSHA256:
-		return CC_SHA256_DIGEST_LENGTH;
-	case kCCDigestSHA384:
-		return CC_SHA384_DIGEST_LENGTH;
-	case kCCDigestSHA512:
-		return CC_SHA512_DIGEST_LENGTH;
-	default:
-		return 0;
-	}
-}
-
-__END_DECLS
-
-#endif /* !_CC_COMMON_DIGEST_SPI_H_ */
+#endif /* _CC_DigestSPI_H_ */
