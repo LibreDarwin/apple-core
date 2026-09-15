@@ -14,7 +14,9 @@
 # by a patch in mk/patches/<name>/, applied to a private copy of the
 # submodule under build/src/<name>/ -- never to the submodule itself.
 # Patches are written against the submodule root, as git format-patch
-# produces them, and are applied with -p1 in name order.
+# produces them, and are applied with -p1 in name order.  Entries that
+# share a submodule may share one patch set -- and one private copy -- by
+# naming it with T_PATCHSET (default: the entry's own name).
 #
 # Optional per-entry customization belongs in mk/tool.d/<name>.mk,
 # safely included when present.  Recognized knobs:
@@ -61,10 +63,15 @@ T_OBJDIR?=	${TOP}/build/obj/${T_PROG}
 # them before any patched copy exists.
 T_ORIGDIR:=	${TOP}/src/${T_DIR}
 
-_PATCHES!=	ls ${TOP}/mk/patches/${T_PROG}/*.patch 2>/dev/null || true
+# T_PATCHSET is read here, before the fragment, so it has to come from the
+# command line or src/Makefile's environment -- or from mk/patchsets.mk,
+# which maps entry names to shared sets.
+sinclude ${TOP}/mk/patchsets.mk
+T_PATCHSET?=	${T_PROG}
+_PATCHES!=	ls ${TOP}/mk/patches/${T_PATCHSET}/*.patch 2>/dev/null || true
 .if !empty(_PATCHES)
 _SUBMOD:=	${T_DIR:C|/.*||}
-T_COPYDIR:=	${TOP}/build/src/${T_PROG}
+T_COPYDIR:=	${TOP}/build/src/${T_PATCHSET}
 . if !empty(T_DIR:M*/*)
 T_SRCDIR?=	${T_COPYDIR}/${T_DIR:C|^[^/]*/||}
 . else
@@ -209,7 +216,7 @@ OBJS+=		${T_OBJDIR}/${g:R}.o
 _PATCHED=	${T_COPYDIR}/.patched
 
 ${_PATCHED}: ${_PATCHES}
-	@${ECHO} "patch: ${T_PROG} <- ${_PATCHES:T}"
+	@${ECHO} "patch: ${T_PATCHSET} <- ${_PATCHES:T}"
 	@rm -rf ${T_COPYDIR} && mkdir -p ${T_COPYDIR}
 	@rsync -a --exclude .git ${TOP}/src/${_SUBMOD}/ ${T_COPYDIR}/
 	@cd ${T_COPYDIR} && for p in ${_PATCHES}; do \
@@ -219,6 +226,11 @@ ${_PATCHED}: ${_PATCHES}
 
 . for s in ${SRCS:N*/*}
 ${T_SRCDIR}/${s}: ${_PATCHED}
+. endfor
+# A source named by path -- a subdirectory of the copy, reached through
+# T_COPYDIR -- may include the patched files too, so every object waits.
+. for s in ${SRCS}
+${T_OBJDIR}/${s:T:R}.o: ${_PATCHED}
 . endfor
 .endif
 

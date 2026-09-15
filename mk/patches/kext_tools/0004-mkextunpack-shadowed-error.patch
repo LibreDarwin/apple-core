@@ -1,0 +1,33 @@
+From: somestupidgirl <sunnevanattsol@gmail.com>
+Subject: [PATCH] kext_tools: mkextunpack's plist error no longer hides its flag
+
+In the mkext2 entry loop, `CFErrorRef error' is declared to receive
+CFPropertyListCreateWithData()'s failure, and shadows the function's own
+`Boolean error'.  The three `error = true; goto finish;' lines after it
+-- meant for that flag -- assign `true' to the CFErrorRef instead, so
+finish: never sees the failure and returns the half-built entries array
+rather than releasing it.  Modern clang refuses the int-to-pointer
+assignment outright.  The CFErrorRef becomes plistError.
+
+--- a/mkextunpack_main.c	2026-09-15 00:17:32
++++ b/mkextunpack_main.c	2026-09-15 00:17:32
+@@ -789,15 +789,15 @@
+             continue;
+         }
+ 
+-        CFErrorRef  error;
++        CFErrorRef  plistError;
+         kextPlist = CFPropertyListCreateWithData(kCFAllocatorDefault,
+                                                  kextPlistDataObject,
+                                                  kCFPropertyListImmutable,
+                                                  NULL,
+-                                                 &error);
++                                                 &plistError);
+         if (!kextPlist) {
+-            errorString = CFErrorCopyDescription(error);
+-            CFRelease(error);
++            errorString = CFErrorCopyDescription(plistError);
++            CFRelease(plistError);
+             if (errorString) {
+                 CFIndex bufsize = CFStringGetMaximumSizeForEncoding(
+                 CFStringGetLength(errorString), kCFStringEncodingUTF8);

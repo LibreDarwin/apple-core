@@ -59,7 +59,7 @@ bmake MK_PORTS=yes              # zsh, tcsh, uucp, lsof, xar: their own build sy
 
 ## State
 
-The default set builds clean: **248 of 252 programs** and **17 of 20
+The default set builds clean: **252 of 256 programs** and **17 of 20
 libraries**, six of them also installed as dylibs under Apple's names
 (`libutil`, `libz`, `libbz2`, `libmd`, `libtidy`, `libipsec`). With
 `MK_PORTS=yes`, **zsh**, **tcsh** (with `csh`), **uucp**, **lsof** and

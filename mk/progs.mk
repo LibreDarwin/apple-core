@@ -276,6 +276,10 @@ PROGS+=	screen/screen screen usr/bin
 PROGS+=	vim/src vim usr/bin
 PROGS+=	vim/src/xxd xxd usr/bin
 PROGS+=	PlistBuddy PlistBuddy usr/libexec
+PROGS+=	kext_tools kextfind usr/sbin
+PROGS+=	kext_tools kextlibs usr/sbin
+PROGS+=	kext_tools kextstat usr/sbin
+PROGS+=	kext_tools mkextunpack usr/sbin
 
 # ------------------------------------------------------------------
 # MK_DIAGNOSTICS -- system diagnostics and developer tools.  They ship
